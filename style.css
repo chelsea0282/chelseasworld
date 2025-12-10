@@ -1,0 +1,216 @@
+/*
+ * style.css
+ * Chelsea's World Portfolio - Windows XP Cyberpunk Theme
+ */
+
+/* --- Global Variables and Reset --- */
+:root {
+    --xp-blue: #3A6EA5;
+    --xp-light: #F0F0F0;
+    --cyber-pink: #FF00FF; /* Bright Magenta */
+    --cyber-cyan: #00FFFF; /* Bright Cyan */
+    --cyber-dark: #000000;
+    --xp-border-radius: 8px; 
+    --xp-font: 'Tahoma', 'MS Sans Serif', 'Arial', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    cursor: url('assets/images/fun-cursor.cur'), auto;
+}
+
+body {
+    background-color: var(--xp-blue); 
+    color: #FFFFFF; 
+    font-family: 'Times New Roman', Times, serif; 
+    margin: 0;
+    overflow: hidden; 
+}
+
+#portfolio-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative; 
+}
+
+/* --- Header Style --- */
+#site-header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+}
+
+#site-header h1 {
+    font-size: 3em;
+    margin-bottom: 5px;
+    text-shadow: 2px 2px 0 var(--cyber-pink), 4px 4px 0 var(--cyber-dark); 
+    font-family: var(--xp-font);
+}
+
+/* --- STATIC DESKTOP ICONS (Top Right) --- */
+#desktop-icons {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 50; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px;
+}
+
+/* --- Floating Elements Base Style (The Glitchy Window) --- */
+.float-item {
+    position: absolute; 
+    padding: 10px;
+    border: none; /* Border is handled by the dynamic box-shadow (glitch) */
+    background-color: rgba(0, 0, 0, 0.9); 
+    
+    /* Base Box Shadow - Will be constantly overridden by JavaScript for glitch effect */
+    box-shadow: 
+        5px 5px 0px 0px var(--cyber-pink),      
+        -5px -5px 0px 0px var(--cyber-cyan),    
+        2px 2px 0px 0px var(--cyber-dark),      
+        0 0 10px rgba(0, 0, 0, 0.5);            
+    
+    border-radius: var(--xp-border-radius); 
+    transition: transform 0.1s ease-out; 
+    z-index: 5;
+    user-select: none;
+    cursor: grab;
+    font-family: var(--xp-font);
+}
+
+/* --- Window-Specific Style --- */
+.project-window {
+    width: 250px;
+    height: 180px;
+    resize: both; 
+    overflow: hidden; 
+}
+
+/* THE XP TITLE BAR - LUNA BLUE GRADIENT */
+.window-header {
+    background: linear-gradient(to bottom, #4A8FD2 0%, #357ECF 100%);
+    color: white; 
+    padding: 5px 8px; 
+    margin: -10px -10px 10px -10px;
+    font-weight: bold;
+    border-bottom: 1px solid #2C69B5; 
+    border-top-left-radius: var(--xp-border-radius);
+    border-top-right-radius: var(--xp-border-radius);
+    cursor: move;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.window-content {
+    color: var(--cyber-cyan); 
+    padding: 0 5px;
+}
+
+.window-content img {
+    width: 100%;
+    height: auto;
+    display: block;
+    image-rendering: pixelated; 
+}
+
+/* --- Folder Style (Static Icons) --- */
+.project-folder {
+    width: 100px;
+    height: 110px;
+    text-align: center;
+    padding: 5px;
+    background-color: transparent; 
+    border: none;
+    box-shadow: none;
+    transition: none;
+    cursor: pointer;
+}
+
+.project-folder img {
+    width: 60px;
+    height: 60px;
+    filter: drop-shadow(2px 2px 0 var(--cyber-dark)); 
+    image-rendering: pixelated;
+}
+
+.project-folder p {
+    margin: 0;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-shadow: 0 0 5px var(--cyber-pink), 0 0 10px var(--cyber-pink); 
+    color: var(--xp-light); 
+}
+
+/* --- Modal/Pop-up Style (XP Dialog Box) --- */
+#project-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--xp-light); 
+    color: var(--cyber-dark); 
+    font-family: var(--xp-font);
+    
+    border: 1px solid #357ECF; 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border-radius: var(--xp-border-radius);
+    
+    width: 90%;
+    max-width: 700px;
+    min-height: 400px;
+    padding: 20px;
+    
+    a { color: #0000CC; font-weight: bold; }
+}
+
+#close-modal-btn {
+    float: right;
+    background-color: var(--cyber-pink); 
+    color: white;
+    border: 2px solid var(--cyber-dark);
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 4px; 
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- CD ROM Player Style --- */
+#cd-rom-player {
+    bottom: 20px;
+    right: 20px;
+    width: 200px;
+    text-align: center;
+    z-index: 10;
+    position: fixed; 
+    padding: 10px;
+    border: 1px solid var(--cyber-pink); 
+    background-color: rgba(0, 0, 0, 0.9); 
+    box-shadow: 0px 0px 5px var(--cyber-cyan); 
+    border-radius: var(--xp-border-radius); 
+}
+#music-toggle {
+    background-color: var(--cyber-cyan);
+    color: black;
+    border: 2px solid var(--cyber-dark);
+    padding: 5px;
+    font-weight: bold;
+    margin-top: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+}
