@@ -10,8 +10,8 @@
     --cyber-pink: #FF00FF; /* Bright Magenta */
     --cyber-cyan: #00FFFF; /* Bright Cyan */
     --cyber-dark: #000000;
-    --xp-border-radius: 8px; 
-    --xp-font: 'Tahoma', 'MS Sans Serif', 'Arial', sans-serif;
+    --xp-border-radius: 8px;
+    --xp-font: Georgia, 'Times New Roman', Times, serif;
 }
 
 * {
@@ -20,9 +20,11 @@
 }
 
 body {
-    background-color: var(--xp-blue); 
+    background-image: url('assets/images/cloud1.png');
+    background-size: cover; /* Make image cover the entire background */
+    background-position: center; /* Center the image */
     color: #FFFFFF; 
-    font-family: 'Times New Roman', Times, serif; 
+    font-family: var(--xp-font); /* Use the global font variable */
     margin: 0;
     overflow: hidden; 
 }
@@ -151,8 +153,8 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 999;
+    /* background-color: rgba(0, 0, 0, 0.8); */ /* no blurring out background when modal pops open */
+    z-index: 999; 
     display: flex;
     justify-content: center;
     align-items: center;

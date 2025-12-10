@@ -30,7 +30,7 @@ const projectData = {
         `,
     },
     '2': {
-        title: "Project 2: Generative Garden - Data Visualization",
+        title: "Project 2: Data Garden",
         description: `
             <p>This visualization maps dating data onto a generative pixel garden. Factors like time, agency, and outcome determine the plant's height, leaf density, and bloom type.</p>
             <iframe 
