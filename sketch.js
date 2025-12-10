@@ -36,7 +36,7 @@ const projectData = {
             <iframe 
                 width="100%" 
                 height="450" 
-                src="p5-sketches/garden-viz.html" 
+                src="/p5-sketches/garden-viz.html" 
                 frameborder="0" 
                 style="border: 2px solid #FF00FF; background-color: rgb(104, 160, 72);"
                 allowfullscreen>
