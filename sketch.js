@@ -9,14 +9,14 @@ const projectData = {
         description: `
             <p>My CC projects!.</p>
             <ul>
-                <a href="https://editor.p5js.org/hanc190/full/TC91xLOUY" target="_blank">A1</a> 
-                <a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A2</a>
-                <a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A3</a>
-                <a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A4</a>
-                <a href="https://editor.p5js.org/hanc190/full/C0CcPKFsF" target="_blank">A5</a>
-                <a href="https://editor.p5js.org/hanc190/full/f4CO8CgRi" target="_blank">A6</a>
-                <a href="https://editor.p5js.org/hanc190/full/fZm5F-KNc" target="_blank">A7</a>
-                <a href="https://chelseas.world" target="_blank">A8</a>
+                <p><a href="https://editor.p5js.org/hanc190/full/TC91xLOUY" target="_blank">A1</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A2</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A3</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A4</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/C0CcPKFsF" target="_blank">A5</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/f4CO8CgRi" target="_blank">A6</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/fZm5F-KNc" target="_blank">A7</a> </p>
+                <p><a href="https://chelseas.world" target="_blank">A8</a>
             </ul>
         `,
     },
