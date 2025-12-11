@@ -86,7 +86,7 @@ body {
 /* --- Window-Specific Style --- */
 .project-window {
     width: 250px;
-    height: 180px;
+    height: 75px;
     resize: both; 
     overflow: hidden; 
 }

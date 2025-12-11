@@ -57,9 +57,9 @@ const projectData = {
         `,
     },
     '3': {
-        title: "Data Garden",
+        title: "Day in My Life",
         description: `
-            <p>This garden represents my exploration of data visualization through generative art. There are factors like time or how often I see them that affects the design like leaf density, and bloom type that varies</p>
+            <p>What it feels like to live a day in Chelsea's world</p>
             <iframe 
                 width="100%" 
                 height="600" 
@@ -67,7 +67,7 @@ const projectData = {
                 frameborder="0" 
                 allowfullscreen>
             </iframe>
-            <p><strong>Try hovering over the plants!</strong> </p>
+            <p><strong>It's another exciting day!</strong> </p>
         `,
     },
     
