@@ -20,7 +20,7 @@ const projectData = {
             </ul>
         `,
     },
-    'Misc Projects': {
+    'Googogle projects': {
         title: "Googogle projects",
         description: `
             <p>I'm also a PM working on AI@Google.</p>
