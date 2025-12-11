@@ -21,9 +21,15 @@ const projectData = {
         `,
     },
     'Misc Projects': {
-        title: "Random Bits",
+        title: "Googogle projects",
         description: `
-            <p>A collection of my user experience and interface design case studies, demonstrating my process from research to high-fidelity prototypes.</p>
+            <p>I'm also a PM working on AI@Google.</p>
+            <ul>
+                <p><a href="https://infinitewonderland.withgoogle.com/" target="_blank">Infinite Wonderland</a> </p>
+                <p><a href="https://labs.google/about" target="_blank">PMed Labs.Google</a> </p>
+                <p><a href="https://www.theverge.com/2022/11/17/23463133/google-search-ar-sneakers-beauty-inclusive-features" target="_blank">spinny shoes on Google Shopping</a> </p>
+                <p><a href="https://labs.google/fx/" target="_blank">Generative AI tools from Google (free)</a> </p>
+            </ul>
         `,
     },
 
