@@ -9,10 +9,10 @@ const projectData = {
         description: `
             <p>My CC projects!.</p>
             <ul>
-                <p><a href="https://editor.p5js.org/hanc190/full/TC91xLOUY" target="_blank">A1</a> </p>
-                <p><a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A2</a> </p>
-                <p><a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A3</a> </p>
-                <p><a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A4</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/TC91xLOUY" target="_blank">A1 - Memory Scene</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A2 - Face Generator</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/FNWqBbvMM" target="_blank">A3 - A neurodivergent clock</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/_VTLRhRZJ" target="_blank">A4 - An exquisite Corpse</a> </p>
                 <p><a href="https://editor.p5js.org/hanc190/full/C0CcPKFsF" target="_blank">A5</a> </p>
                 <p><a href="https://editor.p5js.org/hanc190/full/f4CO8CgRi" target="_blank">A6</a> </p>
                 <p><a href="https://editor.p5js.org/hanc190/full/fZm5F-KNc" target="_blank">A7</a> </p>
