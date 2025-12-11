@@ -53,12 +53,13 @@ let scheduleEvents = [];
 function defineScheduleEvents() {
   // Event Order is now 1 to 6
   scheduleEvents = [
-    { title: "Waking Up & Getting Ready", time: "7:00 AM", duration: "1h", gameId: 1, color: [255, 230, 180] },
-    { title: "Working Out", time: "8:00 AM", duration: "1.5h", gameId: 2, color: [255, 100, 100] },
-    { title: "Eating Healthy (Lunch)", time: "12:00 PM", duration: "1h", gameId: 3, color: [150, 250, 150] },
-    { title: "Work Meetings", time: "2:00 PM", duration: "2h", gameId: 4, color: [180] },
-    { title: "Doing Classwork", time: "7:00 PM", duration: "3h", gameId: 5, color: [100, 100, 200] },
-    { title: "Sleeping Well", time: "11:00 PM", duration: "8h", gameId: 6, color: [20, 20, 70] },
+    // 1. Morning Prep: Soft, light, sunrise color
+    { title: "Morning Prep", time: "6:00 AM", duration: "0.5h", gameId: 1, color: [255, 239, 213] }, // Pale Peach
+    { title: "Exercise", time: "7:00 AM", duration: "1.5h", gameId: 2, color: [255, 160, 122] }, // Light Salmon
+    { title: "Diet", time: "12:00 PM", duration: "1h", gameId: 3, color: [175, 220, 175] }, // Soft Sage Green
+    { title: "Work Grind", time: "8:00 AM", duration: "9h", gameId: 4, color: [198, 203, 218] }, // Pale Lavender Gray
+    { title: "School Grind", time: "5:00 PM", duration: "3h", gameId: 5, color: [135, 169, 215] }, // Medium Sky Blue
+    { title: "Sleep", time: "10:00 PM", duration: "8h", gameId: 6, color: [47, 72, 88] }, // Dark Slate Blue
   ];
 }
 
@@ -120,29 +121,29 @@ function drawBackButton() {
 
 // ------------------------------------------------------------------
 // --- PAGE 0: HOME SCREEN (The Calendar Schedule) ------------------
+// TODO: it would be fun to have this synced with my calendar so it actually updates real time as well
 // ------------------------------------------------------------------
 function drawHome() {
   // Header
   fill(50);
-  textSize(30);
-  text("A Day in My Life: Schedule Overview", width / 2, 50);
+  textSize(25);
+  text("Chelsea's Day", width / 2, 50);
 
   // Time Axis (left side)
   let yStart = 100;
-  let yStep = 60;
-  let timeAxisX = 80;
+  let yStep = 40;
+  let timeAxisX = 90;
   let eventAreaX = (width + timeAxisX) / 2;
   let eventAreaW = width - timeAxisX - 20;
 
-  fill(50);
-  textSize(14);
+  textSize(12);
   textAlign(RIGHT, CENTER);
-  text("7:00 AM", timeAxisX, yStart + 0 * yStep);
-  text("10:00 AM", timeAxisX, yStart + 1.5 * yStep);
-  text("1:00 PM", timeAxisX, yStart + 3 * yStep);
-  text("4:00 PM", timeAxisX, yStart + 4.5 * yStep);
-  text("7:00 PM", timeAxisX, yStart + 6 * yStep);
-  text("10:00 PM", timeAxisX, yStart + 7.5 * yStep);
+  text("6:00 AM", timeAxisX, yStart + 0 * yStep);
+  text("9:00 AM", timeAxisX, yStart + 1.5 * yStep);
+  text("12:00 PM", timeAxisX, yStart + 3 * yStep);
+  text("3:00 PM", timeAxisX, yStart + 4.5 * yStep);
+  text("6:00 PM", timeAxisX, yStart + 6 * yStep);
+  text("9:00 PM", timeAxisX, yStart + 7.5 * yStep);
 
   // Divider line
   stroke(150);
@@ -153,7 +154,7 @@ function drawHome() {
   noStroke();
 
   let positions = [
-    { y: yStart + 0 * yStep, h: 50 },     // Game 1: Waking Up
+    { y: yStart + 0 * yStep, h: 30 },     // Game 1: Waking Up
     { y: yStart + 1 * yStep, h: 80 },     // Game 2: Working Out
     { y: yStart + 2.75 * yStep, h: 50 },  // Game 3: Eating Healthy
     { y: yStart + 4.5 * yStep, h: 100 },  // Game 4: Work Meetings
