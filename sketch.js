@@ -1,9 +1,11 @@
-// --- PROJECT CONTENT DATABASE ---
-// Centralized data structure for all your folders and projects.
+// PROJECT CONTENT DATABASE
+// Centralized data structure for all folders and projects. 
+// TOOD: move this into a different file later on.
 const projectData = {
-    // --- FOLDER CONTENTS (Corresponds to data-folder-id) ---
+    
+    // Folders (Corresponds to data-folder-id)
     'creative-code': {
-        title: "Folder: Creative Code Magic",
+        title: "CC Projects",
         description: `
             <p>Welcome to my generative playground. This section showcases projects built with p5.js, Three.js, and raw WebGL, highlighting my capability in algorithmic art and interactive media.</p>
             <ul>
@@ -13,14 +15,24 @@ const projectData = {
         `,
     },
     'ux-design': {
-        title: "Folder: UX/UI Case Studies",
+        title: "Random Bits",
         description: `
             <p>A collection of my user experience and interface design case studies, demonstrating my process from research to high-fidelity prototypes.</p>
             <a href="assets/docs/case-study-app.pdf" target="_blank" style="color: red; font-weight: bold;">Download: Mobile App Redesign Case Study (PDF)</a>
         `,
     },
 
-    // --- WINDOW/PROJECT CONTENTS (Corresponds to data-project-id) ---
+    // Windows (Corresponds to data-project-id)
+    // example data format
+    // '3': {
+    //     title: "Project 3: Complex 3D Environment",
+    //     description: `
+    //         <p>A Three.js experience demonstrating my skills in 3D rendering and shading languages. This required optimization for web performance.</p>
+    //         <p>Click below to jump into the scene!</p>
+    //         <a href="https://chelseas.world/3d-scene" target="_blank">Enter The Matrix</a>
+    //     `,
+    // },
+
     '1': {
         title: "Project 1: Interactive Glitch Demo",
         description: `
@@ -30,28 +42,35 @@ const projectData = {
         `,
     },
     '2': {
-        title: "Project 2: Data Garden",
+        title: "Data Garden",
         description: `
-            <p>This visualization maps dating data onto a generative pixel garden. Factors like time, agency, and outcome determine the plant's height, leaf density, and bloom type.</p>
+            <p>This garden represents my exploration of data visualization through generative art. There are factors like time or how often I see them that affects the design like leaf density, and bloom type that varies</p>
             <iframe 
                 width="100%" 
-                height="450" 
+                height="600" 
                 src="/p5-sketches/garden-viz.html" 
                 frameborder="0" 
                 style="border: 2px solid #FF00FF; background-color: rgb(104, 160, 72);"
                 allowfullscreen>
             </iframe>
-            <p><strong>Try hovering over the plants!</strong> (The flowers now sway subtly based on the time input.)</p>
+            <p><strong>Try hovering over the plants!</strong> </p>
         `,
     },
     '3': {
-        title: "Project 3: Complex 3D Environment",
+        title: "Data Garden",
         description: `
-            <p>A Three.js experience demonstrating my skills in 3D rendering and shading languages. This required optimization for web performance.</p>
-            <p>Click below to jump into the scene!</p>
-            <a href="https://yourdomain.com/3d-scene" target="_blank">Enter The Matrix</a>
+            <p>This garden represents my exploration of data visualization through generative art. There are factors like time or how often I see them that affects the design like leaf density, and bloom type that varies</p>
+            <iframe 
+                width="100%" 
+                height="600" 
+                src="/p5-sketches/minigame.html" 
+                frameborder="0" 
+                allowfullscreen>
+            </iframe>
+            <p><strong>Try hovering over the plants!</strong> </p>
         `,
     },
+    
 };
 
 // --- DYNAMIC BORDER GLITCH (Runs on a fast interval) ---
