@@ -4,21 +4,26 @@
 const projectData = {
     
     // Folders (Corresponds to data-folder-id)
-    'creative-code': {
+    'creative-comp-projects': {
         title: "CC Projects",
         description: `
-            <p>Welcome to my generative playground. This section showcases projects built with p5.js, Three.js, and raw WebGL, highlighting my capability in algorithmic art and interactive media.</p>
+            <p>My CC projects!.</p>
             <ul>
-                <li><a href="https://yourdomain.com/glitch-generator" target="_blank">Glitch Art Generator (Live)</a></li>
-                <li><a href="https://github.com/yourusername/algorithmic-flora" target="_blank">Algorithmic Flora (Source Code)</a></li>
+                <a href="https://editor.p5js.org/hanc190/full/TC91xLOUY" target="_blank">A1</a> 
+                <a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A2</a>
+                <a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A3</a>
+                <a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A4</a>
+                <a href="https://editor.p5js.org/hanc190/full/C0CcPKFsF" target="_blank">A5</a>
+                <a href="https://editor.p5js.org/hanc190/full/f4CO8CgRi" target="_blank">A6</a>
+                <a href="https://editor.p5js.org/hanc190/full/fZm5F-KNc" target="_blank">A7</a>
+                <a href="https://chelseas.world" target="_blank">A8</a>
             </ul>
         `,
     },
-    'ux-design': {
+    'Misc Projects': {
         title: "Random Bits",
         description: `
             <p>A collection of my user experience and interface design case studies, demonstrating my process from research to high-fidelity prototypes.</p>
-            <a href="assets/docs/case-study-app.pdf" target="_blank" style="color: red; font-weight: bold;">Download: Mobile App Redesign Case Study (PDF)</a>
         `,
     },
 
@@ -38,7 +43,6 @@ const projectData = {
         description: `
             <p>This was a personal experiment in combining low-latency video feedback with WebRTC. It demonstrates advanced real-time browser manipulation.</p>
             <img src="assets/images/project1-full.jpg" alt="Full Project 1 Screenshot" style="max-width: 100%; border: 2px solid var(--cyber-pink); margin-bottom: 15px;">
-            <a href="https://yourdomain.com/live-demo/project1" target="_blank">Launch Live Demo</a>
         `,
     },
     '2': {
