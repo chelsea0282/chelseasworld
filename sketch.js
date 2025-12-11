@@ -33,16 +33,16 @@ const projectData = {
     //     title: "Project 3: Complex 3D Environment",
     //     description: `
     //         <p>A Three.js experience demonstrating my skills in 3D rendering and shading languages. This required optimization for web performance.</p>
+    //         <img src="assets/images/project1-full.jpg" alt="Full Project 1 Screenshot" style="max-width: 100%; border: 2px solid var(--cyber-pink); margin-bottom: 15px;">
     //         <p>Click below to jump into the scene!</p>
     //         <a href="https://chelseas.world/3d-scene" target="_blank">Enter The Matrix</a>
     //     `,
     // },
 
     '1': {
-        title: "Project 1: Interactive Glitch Demo",
+        title: "A Project",
         description: `
-            <p>This was a personal experiment in combining low-latency video feedback with WebRTC. It demonstrates advanced real-time browser manipulation.</p>
-            <img src="assets/images/project1-full.jpg" alt="Full Project 1 Screenshot" style="max-width: 100%; border: 2px solid var(--cyber-pink); margin-bottom: 15px;">
+            <p>hehe it works.</p>
         `,
     },
     '2': {
