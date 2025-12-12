@@ -118,7 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const musicToggleBtn = document.getElementById('music-toggle');
     
     // --- 1. Music Player Functionality ---
-    musicToggleBtn.addEventListener('click', () => {
+    musicToggleBtn.addEventListener('click', (event) => {
+        event.stopPropagation(); // Prevents the click from bubbling up to the parent
         if (musicPlayer.paused) {
             musicPlayer.play().catch(error => {
                 console.log("Audio play initiated by user click.");
