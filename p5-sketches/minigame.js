@@ -1,7 +1,14 @@
-// Global variable to track the current screen (State Management)
-// 0: Home/Schedule, 1: Waking Up, 2: Working Out, 3: Eating Healthy, 
-// 4: Work Meetings, 5: Classwork, 6: Sleeping Well
-let gameState = 0;
+/* TO IMPROVE ON
+* 1. Separate out into different files, kept in one file for now for simplicity of giving Gemini code assist context in the file
+* 2. Coding hygiene, remove unncessary code & repettive stuff that I got lazy and ran out of time in cleaning up
+* 3. 
+* 4. 
+* 5. 
+*/
+
+// Global variable for state management
+// [0-6], home; routine; exercise; diet; work; school; sleep
+let gameState = 0; 
 let gameTimer = 0;
 let gameScore = 0;
 let gameActive = false; // Tracks if the mini-game is currently running
@@ -10,12 +17,14 @@ let chelseaImg;
 
 // --- GAME 1 VARIABLES (Morning Routine) ---
 let wakePlayer = { x: 50, y: 400, s: 20 };
-let wakeItems = []; // Array to store item objects
+let wakeItems = []; 
 let wakeObstacles = [];
+let routineGoalMet = false;
 
 // --- GAME 2 VARIABLES (Workout) ---
 let repCount = 0;
 let repGoal = 50;
+let exerciseGoalMet = false;
 
 // --- GAME 3 VARIABLES (Eating) ---
 let plate = { protein: 0, veg: 0, carb: 0 };
@@ -32,16 +41,17 @@ let mazeGoalMet = false;
 let teacherLooking = false;
 let timeSinceLookChange = 0;
 let snackProgress = 0;
-let lookInterval = 120; // Frames until teacher switches state
+let lookInterval = Math.floor(Math.random() * (120 - 60 + 1)) + 60;
 let classroomGoalMet = false;
 
 // --- GAME 6 VARIABLES (Sleep) ---
-let sleepDepth = 0; // 0 is top, height is bottom
+// 0 is top, height is bottom
+let sleepDepth = 0; 
 let sleepVelocity = 0;
 let sleepTargetZoneY = 0;
 let sleepTargetZoneH = 100;
 
-// --- Global Game Area Definition (Limited Interaction Box for Games) ---
+// --- Global Game Area Constraint ---
 const gameAreaRect = {
     x: 20, // Top-left x
     y: 120, // Top-left y 
@@ -75,7 +85,8 @@ function defineScheduleEvents() {
     { title: "School Grind", time: "6:00 PM", duration: "3h", gameId: 5, color: [135, 169, 215] }, // Medium Sky Blue
     { title: "Sleep", time: "10:00 PM", duration: "8h", gameId: 6, color: [47, 72, 88] }, // Dark Slate Blue
   ];
-  // Sort events by start time 
+  
+  // Sort events by start time 
   scheduleEvents.sort((a, b) => {
     const timeToMinutes = (timeStr) => {
       let [time, ampm] = timeStr.split(' ');
@@ -88,14 +99,11 @@ function defineScheduleEvents() {
   });
 }
 
-
-// ------------------------------------------------------------------
-// --- Draw Function: Runs continuously ---
 function draw() {
-  // Clear the background every frame
-  background(240); // Lighter background color
+  // Clear the background every frame, background rewrite
+  background(240); 
 
-  // Use a switch statement to manage state and call the correct drawing function
+  // Use a switch statement to manage states
   switch (gameState) {
     case 0:
       drawHome();
@@ -121,32 +129,67 @@ function draw() {
   }
 }
 
-// ------------------------------------------------------------------
-// --- Utility Function: Draw Back Button (Used in all 6 games) ---
+/// Back button function 
 function drawBackButton() {
   let btnX = 50; // Shifted left for better balance
   let btnY = 30;
   let btnW = 80; 
   let btnH = 30; 
 
-  // Button hover UI
+  // darker on mouse over
   if (mouseX > (btnX - btnW / 2) && mouseX < (btnX + btnW / 2) &&
     mouseY > (btnY - btnH / 2) && mouseY < (btnY + btnH / 2)) {
-    fill(150); // Lighter reddish on hover
+    fill(150);
   } else {
-    fill(200); // Lighter gray
+    fill(200); 
   }
 
-  rect(btnX, btnY, btnW, btnH, 5); // Draw button rectangle
+  rect(btnX, btnY, btnW, btnH, 5); 
   fill(0);
   textSize(14);
   text("< Schedule", btnX, btnY);
 }
 
+// Completion button function
+function drawCompletionButtons(success) {
+    let btnX = width / 2;
+    let btnY = height / 2 + 100;
+    let btnW = 200;
+    let btnH = 50;
 
-// ------------------------------------------------------------------
+    let btnColor;
+    let btnText;
+
+    if (success) {
+        btnColor = [102, 255, 0]; // Green for Win
+        btnText = "Next Schedule";
+    } 
+    else {
+        btnColor = [255, 0, 0]; // Red for Lose/Replay
+        btnText = "Replay";
+    }
+
+    // Check for hover state
+    if (mouseX > (btnX - btnW / 2) && mouseX < (btnX + btnW / 2) &&
+        mouseY > (btnY - btnH / 2) && mouseY < (btnY + btnH / 2)) {
+        fill(btnColor[0] + 20, btnColor[1] + 20, btnColor[2] + 20); 
+    } 
+    else {
+        fill(btnColor);
+    }
+
+    rect(btnX, btnY, btnW, btnH, 5);
+    fill(0);
+    textSize(18);
+    textAlign(CENTER, CENTER);
+    text(btnText, btnX, btnY);
+
+    // Save position for mousePressed
+    return { x: btnX, y: btnY, w: btnW, h: btnH, success: success };
+}
+
+
 // --- PAGE 0: HOME SCREEN (The Calendar Schedule) ------------------
-// ------------------------------------------------------------------
 function drawHome() {
     // --- 1. Header (Date and Title) ---
     textAlign(CENTER, CENTER); // Ensure header text is centered
@@ -289,14 +332,16 @@ function drawHome() {
     }
 }
 
-// Helper to reset variables when starting a specific level
+// Helper to reset/initialize variables when starting a specific level
 function initGame(level) {
   gameActive = true;
-  gameComplete = false; // Reset completion status
+  gameComplete = false; 
   gameTimer = 0;
   gameScore = 0;
   
   // Reset goal-specific flags
+  routineGoalMet = false;
+  exerciseGoalMet = false;
   eatingGoalMet = false;
   mazeGoalMet = false;
   classroomGoalMet = false;
@@ -309,32 +354,28 @@ function initGame(level) {
        {x: gameAreaRect.x + 200, y: gameAreaRect.y + 130, w: 100, h: 50, type: "Bed"},
        {x: gameAreaRect.x + 400, y: gameAreaRect.y + 280, w: 50, h: 50, type: "Phone"}
     ];
-  }
-  else if (level === 2) { // Workout Setup
+  } else if (level === 2) { // Workout Setup
     repCount = 0;
     gameTimer = 300; // 5 seconds (for 60fps)
-  }
-  else if (level === 3) { // Eating Setup
+  } else if (level === 3) { // Eating Setup
     plate = { protein: 0, veg: 0, carb: 0 };
-  }
-  else if (level === 4) { // Meeting Setup
+  } else if (level === 4) { // Meeting Setup
     mazePlayer = { x: gameAreaRect.x + 20, y: gameAreaRect.y + 20, s: 20 };
     mazeWalls = generateRandomMazeWalls(4);
     mazeGoal = { x: gameAreaRect.x + gameAreaRect.w - 50, y: gameAreaRect.y + gameAreaRect.h - 50, w: 50, h: 50, label: "Room A" };
-  }
-  else if (level === 5) { // Class Setup
+  } else if (level === 5) { // Class Setup
     teacherLooking = false;
     snackProgress = 0;
     timeSinceLookChange = 0;
-  }
-  else if (level === 6) { // Sleep Setup
-    sleepDepth = height / 2;
+  } else if (level === 6) { // Sleep Setup
+    gameTimer = 600; 
+    sleepDepth = height / 2;
     sleepVelocity = 0;
     sleepTargetZoneY = height / 2;
   }
 }
 
-// --- Generates random item positions for Game 1 ---
+// Helper to generate random item position
 function generateRandomWakeItems() {
     const items = ["Teeth", "Clothes", "Keys", "Badge"];
     const itemSize = 30;
@@ -358,7 +399,7 @@ function generateRandomWakeItems() {
     return newItems;
 }
 
-// --- Generates random wall placements for Game 4 ---
+// Helper to generate random wall position
 function generateRandomMazeWalls(count = 4) {
     let newWalls = [];
     const minW = 100;
@@ -386,57 +427,15 @@ function generateRandomMazeWalls(count = 4) {
     return newWalls;
 }
 
-// Function to draw the completion button (Replay or Next)
-function drawCompletionButtons(success) {
-    let btnX = width / 2;
-    let btnY = height / 2 + 100;
-    let btnW = 200;
-    let btnH = 50;
-
-    let btnColor;
-    let btnText;
-
-    if (success) {
-        btnColor = [100, 200, 100]; // Green for Win
-        btnText = "Go to Next Task ->";
-    } 
-    else {
-        btnColor = [200, 100, 190]; // Red for Lose/Replay
-        btnText = "Replay Task";
-    }
-
-    // Check for hover state
-    if (mouseX > (btnX - btnW / 2) && mouseX < (btnX + btnW / 2) &&
-        mouseY > (btnY - btnH / 2) && mouseY < (btnY + btnH / 2)) {
-        fill(btnColor[0] + 20, btnColor[1] + 20, btnColor[2] + 20); 
-    } 
-    else {
-        fill(btnColor);
-    }
-
-    rect(btnX, btnY, btnW, btnH, 5);
-    fill(255);
-    textSize(18);
-    textAlign(CENTER, CENTER);
-    text(btnText, btnX, btnY);
-
-    // Save position for mousePressed
-    return { x: btnX, y: btnY, w: btnW, h: btnH, success: success };
-}
-
-
-// ------------------------------------------------------------------
 // --- PAGE 1: MINI-GAME 1 - Waking Up & Getting Ready (Routine) ----
-// ------------------------------------------------------------------
 function drawRoutineGame() {
-  // Background matches Morning Prep: [255, 239, 213] (Pale Peach)
   background(255, 239, 213);
   drawBackButton();
-  
   textAlign(CENTER, CENTER);
   
   // Goal Text
   textSize(24); // Main Title Size
+  noStroke();
   text("Goal: Complete the morning tasks!", width/2, 50);
   
   // Draw Interaction Box Boundary
@@ -457,13 +456,15 @@ function drawRoutineGame() {
       wakePlayer.y = constrain(wakePlayer.y, gameAreaRect.y + wakePlayer.s/2, gameAreaRect.y + gameAreaRect.h - wakePlayer.s/2);
   }
 
-    // --- DRAW ITEMS ---
+    // Draw Items
     let uncollectedCount = 0; // Use a distinct variable name
     for (let item of wakeItems) {
         if (!item.collected) {
             uncollectedCount++;
             fill(0, 0, 255);
+            noStroke();
             rect(item.x, item.y, 30, 30); // Draw item
+          //loadImage('p5images/minigame_keys.png')
             fill(0); 
             textSize(14); 
             text(item.label, item.x, item.y - 20);
@@ -475,7 +476,7 @@ function drawRoutineGame() {
         }
     }
 
-  // Draw Obstacles (omitted for brevity)
+  // Draw Obstacles
   for (let obs of wakeObstacles) {
     fill(100);
     rect(obs.x, obs.y, obs.w, obs.h);
@@ -485,12 +486,13 @@ function drawRoutineGame() {
     }
   }
 
-    // --- WIN CONDITION CHECK (FIXED) ---
-    // Check if the final count is zero and the game hasn't ended yet
-    if (uncollectedCount === 0 && !gameComplete) {
-        gameActive = false;
-        gameComplete = true; 
-    } 
+  // Check if the final count is zero and the game hasn't ended yet
+  if (uncollectedCount === 0 && !gameComplete) {
+      gameActive = false;
+      gameComplete = true;
+      // this was actually unncessary for this game
+      routineGoalMet = true;
+  } 
 
   // Draw Player
   if (chelseaImg) {
@@ -500,8 +502,7 @@ function drawRoutineGame() {
     ellipse(wakePlayer.x, wakePlayer.y, wakePlayer.s, wakePlayer.s);
   }
 
-    // --- DRAW UI BASED ON GAME STATE (FIXED LOGIC) ---
-    if (gameComplete) {
+  if (gameComplete) {
       // The win condition is simply that the game ended (because only wins trigger this block in the logic above)
       // We use uncollectedCount for the final status check
       let win = uncollectedCount === 0; 
@@ -521,14 +522,16 @@ function drawRoutineGame() {
     text(`Progress: ${collectedCount} / ${wakeItems.length} collected`, width/2, 80);
 }
 
-// ------------------------------------------------------------------
-// --- PAGE 2: MINI-GAME 2 - Working Out (Button Mash) --------------
-// ------------------------------------------------------------------
+// --- PAGE 2: MINI-GAME 2 - Working Out --------------
 function drawWorkoutGame() {
   background(255, 160, 122);
   drawBackButton();
 
   textAlign(CENTER, CENTER); 
+  
+  fill(50);
+  textSize(24); // Main Title Size
+  text("Get your REPs in!", width/2, 50); 
 
   if (!gameActive && !gameComplete) {
     // Game just ended due to timer
@@ -537,6 +540,8 @@ function drawWorkoutGame() {
   
   if (gameComplete) {
     let win = repCount >= repGoal;
+    background(255, 160, 122);
+    drawBackButton();
     fill(50); 
     textSize(24); // Main Title Size
     text(win ? "Great Workout!" : "Try Harder!", width/2, height/2 - 50);
@@ -545,26 +550,24 @@ function drawWorkoutGame() {
   }
   
   gameTimer--;
-  if (gameTimer <= 0) gameActive = false;
-
-  fill(50);
-  textSize(24); // Main Title Size
-  text("Press LEFT and RIGHT arrow fast!", width/2, 100); 
+  if (gameTimer <= 0) {
+    gameActive = false;
+  }
   
   fill(0);
   textSize(16); // Sub-header/Calendar Size
-  text("Time Left: " + floor(gameTimer/60) + " seconds", width/2, 150);
+  text("Time Left: " + floor(gameTimer/60) + " seconds", width/2, 80);
+  text("Press <, > arrows to get your reps in", width/2, 100);
   
   // Draw Interaction Box Boundary (Visual aid, movement is limited by logic)
   noFill(); 
-  stroke(255); 
+  stroke(100); 
   strokeWeight(2);
   rect(gameAreaRect.x + gameAreaRect.w/2, gameAreaRect.y + gameAreaRect.h/2, gameAreaRect.w, gameAreaRect.h);
   
   // Progress Bar (Visual area is not constrained, but limit logic is active)
   noFill(); 
-  stroke(255); 
-  strokeWeight(3);
+  strokeWeight(2);
   rect(width/2, height/2, 300, 50);
   
   noStroke(); fill(255, 255, 0);
@@ -575,20 +578,20 @@ function drawWorkoutGame() {
   fill(0);
   textSize(16); // Sub-header/Calendar Size
   text("Reps: " + repCount + " / " + repGoal, width/2, height/2); 
+  
 }
 
-// ------------------------------------------------------------------
 // --- PAGE 3: MINI-GAME 3 - Eating Healthy (Selection) -------------
-// ------------------------------------------------------------------
 function drawEatingGame() {
-  // Background matches Meal: [175, 220, 175] (Soft Sage Green)
   background(175, 220, 175);
   drawBackButton();
+  noStroke();
 
   textAlign(CENTER, CENTER);
 
   // Check goal status every frame
-  eatingGoalMet = plate.veg >= plate.carb && plate.protein >= 2; 
+  //goal = more protein and veg than carbs, and at least 2 protein
+  eatingGoalMet = plate.veg >= plate.carb && plate.protein >= plate.carb && plate.protein >= 2 && plate.veg >=1; 
 
   if (gameComplete) {
       fill(50); 
@@ -599,18 +602,21 @@ function drawEatingGame() {
   }
 
   textSize(24); fill(50); // Main Title Size
-  text("Build a Balanced Plate", width/2, 80); 
+  text("Build a Balanced Plate", width/2, 50); 
   
   textSize(16); fill(0); // Sub-header/Calendar Size
-  text("Click the buttons below to select your meal", width/2, 110); 
+  text("Click the buttons below to select your meal", width/2, 80); 
   
-  // Draw Interaction Box Boundary (Visual aid, movement is limited by logic)
-  noFill(); stroke(100); strokeWeight(2);
+  // Draw Interaction Box Boundary 
+  noFill(); 
+  stroke(100); 
+  strokeWeight(2);
   rect(gameAreaRect.x + gameAreaRect.w/2, gameAreaRect.y + gameAreaRect.h/2, gameAreaRect.w, gameAreaRect.h);
   
   // Display Plate Stats
-  textSize(16); // Sub-header/Calendar Size
+  textSize(16); 
   fill(0);
+  noStroke();
   text("Proteins: " + plate.protein, 150, 250); 
   text("Carbs: " + plate.carb, 325, 250);
   text("Veggies: " + plate.veg, 500, 250);
@@ -635,18 +641,17 @@ function drawEatingGame() {
   }
 }
 
-// ------------------------------------------------------------------
-// --- PAGE 4: MINI-GAME 4 - Work Meetings (Maze) -------------------
-// ------------------------------------------------------------------
+// --- PAGE 4: MINI-GAME 4 - Work Meetings -------------------
 function drawMeetingGame() {
-  // Background matches Work Grind: [198, 203, 218] (Pale Lavender Gray)
   background(198, 203, 218);
   drawBackButton();
 
   textAlign(CENTER, CENTER);
   
   // Draw Interaction Box Boundary
-  noFill(); stroke(100); strokeWeight(2);
+  noFill(); 
+  stroke(100); 
+  strokeWeight(2);
   rect(gameAreaRect.x + gameAreaRect.w/2, gameAreaRect.y + gameAreaRect.h/2, gameAreaRect.w, gameAreaRect.h);
 
   // Check for win
@@ -657,16 +662,20 @@ function drawMeetingGame() {
   }
   
   if (gameComplete) {
+    background(198, 203, 218);
+    drawBackButton();
     fill(50); 
     textSize(24); // Main Title Size
-    text("Meeting Room Found! (Goal Met)", width/2, height/2 - 50);
+    noStroke();
+    text("Made it to the meeting!", width/2, height/2 - 50);
     drawCompletionButtons(mazeGoalMet);
     return;
   }
 
-
-  textSize(24); fill(50); // Main Title Size
-  text("Goal: Navigate the office to find the meeting room!", width/2, 80);
+  textSize(24); 
+  noStroke();
+  fill(50); 
+  text("Goal: Navigate to the meeting room!", width/2, 50);
   
   // Draw Goal
   fill(0, 255, 255);
@@ -681,10 +690,10 @@ function drawMeetingGame() {
   
   // Move Player
   if (gameActive) {
-      if (keyIsDown(LEFT_ARROW)) mazePlayer.x -= 2;
-      if (keyIsDown(RIGHT_ARROW)) mazePlayer.x += 2;
-      if (keyIsDown(UP_ARROW)) mazePlayer.y -= 2;
-      if (keyIsDown(DOWN_ARROW)) mazePlayer.y += 2;
+      if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) mazePlayer.x -= 3;
+      if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) mazePlayer.x += 3;
+      if (keyIsDown(UP_ARROW) || keyIsDown(87)) mazePlayer.y -= 3;
+      if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) mazePlayer.y += 3;
       
       // Keep player inside the bounds
       mazePlayer.x = constrain(mazePlayer.x, gameAreaRect.x + mazePlayer.s/2, gameAreaRect.x + gameAreaRect.w - mazePlayer.s/2);
@@ -698,16 +707,18 @@ function drawMeetingGame() {
       }
   }
 
-  // Draw Player
-  fill(0, 0, 200);
-  ellipse(mazePlayer.x, mazePlayer.y, mazePlayer.s, mazePlayer.s);
+  // Draw Player
+  if (chelseaImg) {
+    image(chelseaImg, mazePlayer.x, mazePlayer.y, mazePlayer.s * 2, mazePlayer.s * 2);
+  } else {
+    fill(50, 200, 50);
+    ellipse(mazePlayer.x, mazePlayer.y, mazePlayer.s, mazePlayer.s);
+  }
+
 }
 
-// ------------------------------------------------------------------
-// --- PAGE 5: MINI-GAME 5 - Doing Classwork (Stealth) --------------
-// ------------------------------------------------------------------
+// --- PAGE 5: MINI-GAME 5 - Snacking during Class --------------
 function drawClassworkGame() {
-  // Background matches School Grind: [135, 169, 215] (Medium Sky Blue)
   background(135, 169, 215);
   drawBackButton();
 
@@ -723,13 +734,16 @@ function drawClassworkGame() {
   if (gameComplete) {
     fill(50); 
     textSize(24); // Main Title Size
-    text("Delicious! (Goal Met)", width/2, height/2 - 50);
+    noStroke();
+    text("YUM!", width/2, height/2 - 50);
     drawCompletionButtons(classroomGoalMet);
     return;
   }
   
   // Draw Interaction Box Boundary (Visual aid, movement is limited by logic)
-  noFill(); stroke(200); strokeWeight(2);
+  noFill(); 
+  stroke(100); 
+  strokeWeight(2);
   rect(gameAreaRect.x + gameAreaRect.w/2, gameAreaRect.y + gameAreaRect.h/2, gameAreaRect.w, gameAreaRect.h);
 
   if (gameActive) {
@@ -741,27 +755,28 @@ function drawClassworkGame() {
       }
   }
   
-  // Instructions Title (Matching Home Screen)
+  // Instructions Title 
   fill(50);
+  noStroke();
   textSize(24);
-  text("Goal: Sneak a Snack!", width/2, 80);
+  text("Goal: Sneak a Snack", width/2, 50);
+  textSize(16); 
+  fill(0); 
+  text("Hold SPACE to eat snack when teacher isn't looking", width/2, 80); 
   
   // Draw Teacher (Centered above the game area)
   fill(teacherLooking ? 255 : 0, teacherLooking ? 0 : 255, 0); // Red if looking, Green if not
-  ellipse(width/2, 150, 80, 80);
+  ellipse(width/2, 260, 80, 80);
   fill(255);
-  textSize(16); // Sub-header/Calendar Size
-  text(teacherLooking ? "TEACHER LOOKING!" : "Writing on board...", width/2, 150);
-  
-  // Instructions
-  fill(255);
-  textSize(16); // Sub-header/Calendar Size
-  text("Hold SPACE to eat snack when teacher isn't looking!", width/2, 400);
+  textSize(16);
+  text(teacherLooking ? "LOOKING!" : "Writing on board...", width/2, 200);
   
   // Progress Bar (inside game area, centered)
-  stroke(255); noFill(); rect(width/2, gameAreaRect.y + gameAreaRect.h/2, 200, 30);
+  stroke(255); 
+  noFill(); 
+  rect(width/2, gameAreaRect.y + gameAreaRect.h*3/4, 200, 30);
   noStroke(); fill(255, 165, 0); 
-  rect(width/2 - 100 + (snackProgress), gameAreaRect.y + gameAreaRect.h/2, snackProgress*2, 28);
+  rect(width/2 - 100 + (snackProgress), gameAreaRect.y + gameAreaRect.h*3/4, snackProgress*2, 28);
   
   // Logic
   if (gameActive && keyIsDown(32)) { // Spacebar
@@ -775,39 +790,50 @@ function drawClassworkGame() {
   }
 }
 
-
-// ------------------------------------------------------------------
-// --- PAGE 6: MINI-GAME 6 - Sleeping Well (Balance) ----------------
-// ------------------------------------------------------------------
+// --- PAGE 6: MINI-GAME 6 - Sleeping Well ----------------
 function drawSleepGame() {
-  // Background matches Sleep: [47, 72, 88] (Dark Slate Blue)
-  background(47, 72, 88);
-  drawBackButton();
-
-  textAlign(CENTER, CENTER);
+  textAlign(CENTER, CENTER);
+  background(47, 72, 88);
+  drawBackButton();
+  
+  // Instructions Title 
+  fill(255);
+  noStroke();
+  textSize(24);
+  text("Goal: Get Restful Sleep", width/2, 50);
+  textSize(16); 
+  text("Use UP/DOWN Arrows to optimize sleep stages and stay in the Green Zone", width/2, 80); 
   
   // End game condition check
-  if (gameActive && frameCount % 600 === 0) {
-      gameActive = false;
-      gameComplete = true;
-  }
+  if (gameActive) {
+    gameTimer--; // Decrement timer every frame
+    if (gameTimer <= 0) {
+      gameActive = false;
+      gameComplete = true; // Game ends when timer reaches zero
+    }
+  }
   
   if (gameComplete) {
-    let win = gameScore > 500;
+    textAlign(CENTER, CENTER);
+    background(47, 72, 88);
+    drawBackButton();
+    let win = gameScore > 500;
     fill(255); 
     textSize(24); // Main Title Size
-    text(win ? "Restful Sleep! :)" : "Insomnia... :(", width/2, height/2 - 50);
+    text(win ? "Restful Sleep! :)" : "Bad Sleep:(", width/2, height/2 - 50);
     drawCompletionButtons(win);
     return;
   }
   
-  // Draw Interaction Box Boundary (Visual aid)
-  noFill(); stroke(200); strokeWeight(2);
+  // Draw Interaction Box Boundary
+  noFill(); 
+  stroke(200); 
+  strokeWeight(2);
   rect(gameAreaRect.x + gameAreaRect.w/2, gameAreaRect.y + gameAreaRect.h/2, gameAreaRect.w, gameAreaRect.h);
 
   if (gameActive) {
       // Logic: "Gravity" pulls sleep depth down, UP arrow pushes it up
-      sleepDepth += 1 + sin(frameCount * 0.05); 
+      sleepDepth += 1 + sin(frameCount * 0.05); //adding oscillation to downward movement so it's not linear
       if (keyIsDown(UP_ARROW)) sleepDepth -= 3;
       if (keyIsDown(DOWN_ARROW)) sleepDepth += 3;
        
@@ -822,7 +848,7 @@ function drawSleepGame() {
 
   // Draw Zones
   noStroke();
-  fill(100, 255, 100, 100); // Green Target Zone (REM)
+  fill(100, 255, 100, 100); // Green Target Zone 
   // Draw target zone centered in the game area horizontally, using Y from center of the area
   rect(gameAreaRect.x + gameAreaRect.w/2, sleepTargetZoneY, gameAreaRect.w, sleepTargetZoneH);
   
@@ -835,22 +861,16 @@ function drawSleepGame() {
   textSize(16); // Sub-header/Calendar Size
   if (abs(sleepDepth - sleepTargetZoneY) < sleepTargetZoneH / 2) {
     fill(0, 255, 0);
-    text("In the Zone (REM/Deep)!", width/2, 100); 
+    text("In the Zone (REM/Deep)!", width/2, 400); 
   } else {
     fill(255, 0, 0);
-    text("Waking Up/Light Sleep!", width/2, 100); 
+    text("Waking Up/Light Sleep!", width/2, 400); 
   }
-  
-  fill(255); // White text on dark background
-  textSize(16); // Sub-header/Calendar Size
-  text("Goal: Use UP/DOWN Arrows to optimize sleep stages and stay in the Green Zone", width/2, 450);
-  textAlign(RIGHT, CENTER);
-  text("Sleep Score: " + gameScore, width - 10, 50); // Intentionally far right
+  
+  text("Sleep Score: " + gameScore, width/2, 450); 
 }
 
-// ------------------------------------------------------------------
 // --- Input Handler: Mouse Click -----------------------------------
-// ------------------------------------------------------------------
 function mousePressed() {
   // We use scheduleXStart instead of timeAxisX to define the event area boundary
   let timeColW = 70;
