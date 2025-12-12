@@ -1,6 +1,14 @@
 // PROJECT CONTENT DATABASE
-// Centralized data structure for all folders and projects. 
 // TOOD: move this into a different file later on.
+/* FEEDBACK
+- full commit to the windows xp experience and go all in, make the clicking sounds, icons, full aesthetic. 
+- make clear what you're inspired by which is WindowsXP
+- why are some of these randomly not working? 
+- random things aren't consistent like play music button, and also the font style of it's chelsea's world
+- fix the small things like the spacing, etc. 
+- what is the relationship between the floating windows and the static folders?
+- maybe have a "launch app" button on the folder that opens the floating window?
+*/
 const projectData = {
     
     // Folders (Corresponds to data-folder-id)
