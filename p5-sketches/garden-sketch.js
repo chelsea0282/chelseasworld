@@ -1,12 +1,12 @@
-/*to improve on
-1. separate out this into multiple different files
-2. make the flowers sway
-3. do i want to change the colors more
-4. allow users to input their own data and see how it materializes (it can be just one go kind of a thing)
+/* To improve on
+* 1. Separate out this into multiple different files
+* 2. Make the flowers sway
+* 3. Do i want to change the colors of the flowers more? Allow more variations of the flower pattern, see if there are librarie that I can use for these garden visuals so I don't need to hard code these as much.
+* 4. Allow users to input their own data and see how it materializes (it can be just one go kind of a thing)
 */
 
-// json data
-
+/* JSON DATA
+TODO: move this to a different file */
 const GARDEN_DATA = [
   // ROMANTIC DATES
   { id: "D1", type: "romantic", agency: "NA", ending: "NA", time: 1, connotation: 1, datenum: 1 },
@@ -39,8 +39,8 @@ const GARDEN_DATA = [
   { id: "S1", type: "self", agency: "ongoing", ending: "good", time: 5, connotation: 3, datenum: 3 } 
 ];
 
-// variable set up
-let PIXEL_SIZE = 4; // Smaller pixel size for fidelity
+//global variables
+let PIXEL_SIZE = 4; // pixel size for pixel design asesthetic 
 let PADDING_X = 50; 
 let plants = [];
 let grassColor;
@@ -48,42 +48,91 @@ let dropPadding = 100;
 let RESERVATION_SIZE = 60; // Spacing to prevent overlap
 let data_points = GARDEN_DATA; 
 let totalPlants = data_points.length;
+
 // Constant for extra stem height for blooms 
 const BLOOM_PADDING = PIXEL_SIZE * 6; 
 
+// Function: setup()
 function setup() {
   createCanvas(600, 600);
   grassColor = color(104, 160, 72); 
   noStroke();
-  angleMode(DEGREES); // Use degrees for easy rotation
+  angleMode(DEGREES); 
   frameRate(30); 
   
   // Collision detection and random placement loop
   for (let i = 0; i < totalPlants; i++) {
-    let newX, newY;
+    let newX;
+    let newY;
     let overlap = true;
     let attempts = 0;
     
+    let newData = data_points[i];
+    let baseHeight = newData.datenum * PIXEL_SIZE * 3;
+    let newMaxHeight;
+    
+    // Connotation dictates the height
+    if (newData.connotation > 1) {
+        newMaxHeight = baseHeight + BLOOM_PADDING;
+    } else {
+        newMaxHeight = baseHeight;
+    }
+
+    // potential risk of infinite for loop, do added attempts <1000
     while (overlap && attempts < 1000) {
-      newX = random(PADDING_X, width - PADDING_X);
-      newY = random(dropPadding + PIXEL_SIZE, height - 50);
       
+      newX = random(PADDING_X, width - PADDING_X);
+      
+      let minY = dropPadding + newMaxHeight + PIXEL_SIZE; // Add a pixel buffer
+      let maxY = height - 50; // Maximum allowed Y position (bottom of canvas)
+      
+      // Check if the plant can actually fit on the canvas.
+      if (minY >= maxY) {
+          // if plant is too tall, reset Y position to highest possible Y
+          newY = maxY; 
+      } else {
+          // Generate a random Y position between the minY and maxY
+          newY = random(minY, maxY);
+      }
+      
+      // Charted to pixel graph
       newX = floor(newX / PIXEL_SIZE) * PIXEL_SIZE;
       newY = floor(newY / PIXEL_SIZE) * PIXEL_SIZE;
       
       overlap = false;
       
       for (let existingPlant of plants) {
-        let d = dist(newX, newY, existingPlant.x, existingPlant.targetY);
         
-        if (d < RESERVATION_SIZE) {
+        // Calculate distances between centers of the two plants' bounding boxes
+        let existingMaxHeight = existingPlant.maxHeight; 
+        
+        // Horizontal distance between centers (x)
+        let dx = abs(newX - existingPlant.x); 
+        
+        // Check 1: Horizontal overlap
+        // New Plant (bottom: newY, top: newY - newMaxHeight)
+        // Existing Plant (bottom: existingPlant.targetY, top: existingPlant.targetY - existingMaxHeight)
+        let horizontalOverlap = dx < RESERVATION_SIZE;
+        
+        // Check 2: Vertical overlap
+        // Vertical space occupied by the new plant: [newY - newMaxHeight, newY]
+        // Vertical space occupied by the existing plant: [existingPlant.targetY - existingMaxHeight, existingPlant.targetY]
+        let existingTop = existingPlant.targetY - existingMaxHeight;
+        let existingBottom = existingPlant.targetY;
+        let newTop = newY - newMaxHeight;
+        let newBottom = newY;
+        
+        // Overlap check: (A.min < B.max) && (A.max > B.min)
+        let verticalOverlap = (newTop < existingBottom) && (newBottom > existingTop);
+        
+        // Final Collision Check
+        if (horizontalOverlap && verticalOverlap) {
           overlap = true;
           break; 
         }
       }
       attempts++;
     }
-    
     plants.push(new Datapoint(data_points[i], newX, newY));
   }
 }
@@ -97,11 +146,13 @@ function draw() {
   }
 }
 
-// datapoint class
+// Datapoint class object that represents each of the dates
 class Datapoint {
   constructor(data, targetX, targetY) { 
     this.data = data;
     this.x = targetX; 
+    
+    // For seed dropping animation 
     this.y = 0; 
     this.targetY = targetY; 
     
@@ -109,10 +160,10 @@ class Datapoint {
     this.isSprouting = false;
     this.currentHeight = 0;
     
-    //height of base is datenum
+    // Height of base is datenum
     let baseHeight = this.data.datenum * PIXEL_SIZE * 3;
 
-    // add height for floor bloom to not hide leaves
+    // Add height for floor bloom to not hide leaves
     if (this.data.connotation > 1) {
         this.maxHeight = baseHeight + BLOOM_PADDING;
     } else {
@@ -162,6 +213,7 @@ class Datapoint {
     // Divide by leafCount + 1 to ensure the last leaf is drawn below maxHeight
     let leafInterval = this.maxHeight / (leafCount + 1); 
 
+    
     // B. The Stem and Leaves 
     if (this.currentHeight > 0) {
       let stemColor, shadowColor;
@@ -178,13 +230,9 @@ class Datapoint {
           // Self/Personal: Brown
           stemColor = color(90, 45, 10); 
           shadowColor = color(60, 30, 0); 
-      } else {
-          // Fallback 
-          stemColor = color(255, 215, 0); 
-          shadowColor = color(190, 160, 0); 
-      }
+      } 
       
-      // Draw stem segments
+      // Stem drawing
       for(let h = 0; h < this.currentHeight; h += PIXEL_SIZE){
         
         let currentStemColor = isMouseOver ? lerpColor(stemColor, color(255, 255, 150), 0.3) : stemColor;
@@ -214,11 +262,12 @@ class Datapoint {
       let bloomY = -this.maxHeight; 
       
       if (this.data.connotation === 3) {
-        // Calculate the total petal count = 3 Binary Factors + datenum
         let petalCount = 0;
+        
+        // Calculate the total petal count = 3 Factors + datenum
         if (this.data.agency === 'me') {
             petalCount++;
-        }
+        } 
         if (this.data.ending === 'good' || this.data.ending === 'ongoing') { 
             petalCount++;
         }
@@ -229,12 +278,10 @@ class Datapoint {
         // ADD datenum to petal count (1 to 8)
         petalCount += this.data.datenum;
 
-        // Pass the combined score as the total petal count AND the ending type
         drawComplexFlower(0, bloomY, isMouseOver, petalCount, this.data.ending);
       } else if (this.data.connotation === 2) {
         drawSimpleBud(0, bloomY, isMouseOver);
       } 
-      // Connotation 1 results in no bloom
     }
     
     // D. DISPLAY ID ON MOUSEOVER
@@ -249,6 +296,7 @@ class Datapoint {
   }
 }
 
+// Draw Leaf
 function drawLeaf(stemX, stemY, connotation, side) {
     push();
     translate(stemX, stemY); 
@@ -262,20 +310,18 @@ function drawLeaf(stemX, stemY, connotation, side) {
         shadowColor = color(100, 0, 0);
     }
     
-    if (side === 0) { // LEFT SIDE
-        // Left Leaf Shaded Design
-        // 1. Shadow (Darker)
+  
+    if (side === 0) { 
+        // LEFT SIDE
+        fill(leafColor);
+        rect(-PIXEL_SIZE * 2, -PIXEL_SIZE, PIXEL_SIZE * 2, PIXEL_SIZE);  
         fill(shadowColor);
         rect(-PIXEL_SIZE * 3, 0, PIXEL_SIZE * 2, PIXEL_SIZE);
-        // 2. Highlight (Lighter)
-        fill(leafColor);
-        rect(-PIXEL_SIZE * 2, -PIXEL_SIZE, PIXEL_SIZE * 2, PIXEL_SIZE);
-    } else { // RIGHT SIDE
-        // Right Leaf Shaded Design
-        // 1. Highlight (Lighter)
+        
+    } else { 
+        // RIGHT SIDE
         fill(leafColor);
         rect(PIXEL_SIZE, -PIXEL_SIZE, PIXEL_SIZE * 2, PIXEL_SIZE);
-        // 2. Shadow (Darker)
         fill(shadowColor);
         rect(PIXEL_SIZE * 2, 0, PIXEL_SIZE * 2, PIXEL_SIZE);
     }
@@ -283,10 +329,8 @@ function drawLeaf(stemX, stemY, connotation, side) {
     pop();
 }
 
-/**
- * Draws a complex flower with a variable number of petals (1 to 11).
+/* Draw Complex Flower
  * Petals are drawn by rotating a single petal shape around the center.
- *
  * @param {number} x - Center X coordinate (relative to translation).
  * @param {number} y - Center Y coordinate (relative to translation).
  * @param {boolean} isMouseOver - If the mouse is hovering.
@@ -297,7 +341,7 @@ function drawComplexFlower(x, y, isMouseOver, petalCount, endingType) {
   let basePetal, shadowPetal;
   let centerColor = color(255, 215, 0); // Stigma remains yellow
   
-  // --- Determine Petal Color based on Ending ---
+  // Peter color based on endingType
   switch (endingType) {
     case 'good':
     case 'ongoing':
@@ -305,12 +349,12 @@ function drawComplexFlower(x, y, isMouseOver, petalCount, endingType) {
       shadowPetal = color(200, 80, 140); 
       break;
     case 'bad':
-      basePetal = color(150, 0, 0);     // Dark Red
+      basePetal = color(150, 0, 0); // Dark Red
       shadowPetal = color(100, 0, 0);
       break;
     case 'NA':
     default:
-      basePetal = color(255, 255, 0);   // Yellow
+      basePetal = color(255, 255, 0); // Yellow
       shadowPetal = color(200, 200, 0); 
       break;
   }
@@ -322,31 +366,33 @@ function drawComplexFlower(x, y, isMouseOver, petalCount, endingType) {
   push();
   translate(x, y);
 
-  // Loop to draw petals based on the total combined count
+  // Loop to draw petals 
   for (let i = 0; i < petalCount; i++) {
     push();
+    
     // Calculate rotation angle (360 degrees / total petals)
     rotate(i * (360 / petalCount));
-    
     fill(basePetal);
+    
     // Draw a single petal shape (1x2 pixel shape) at the top position
     rect(-PIXEL_SIZE / 2, -PIXEL_SIZE * 3.5, PIXEL_SIZE, PIXEL_SIZE * 2); 
     
     pop();
   }
   
-  // Center/Stigma 
-  // 1. Draw Center Shadow/Base (Fixed 3x3 pixels)
+  // Center of flower
+  // Center Shadow/Base (Fixed 3x3 pixels)
   fill(shadowPetal);
   rect(-PIXEL_SIZE * 1.5, -PIXEL_SIZE * 1.5, PIXEL_SIZE * 3, PIXEL_SIZE * 3);
   
-  // 2. Draw Center Highlight (Fixed 1x1 pixels)
+  // Center Highlight (Fixed 1x1 pixels)
   fill(centerColor);
   rect(-PIXEL_SIZE / 2, -PIXEL_SIZE / 2, PIXEL_SIZE, PIXEL_SIZE);
 
   pop();
 }
 
+// Draw Simple Flower
 function drawSimpleBud(x, y, isMouseOver) { 
   let baseBud = color(100, 100, 200); 
   let shadowBud = color(50, 50, 150);
@@ -354,15 +400,15 @@ function drawSimpleBud(x, y, isMouseOver) {
   
   if (isMouseOver) baseBud = lerpColor(baseBud, color(255, 255, 255), 0.5);
 
-  // 1. Bottom Shadow 
+  // Bottom Shadow 
   fill(shadowBud);
   rect(x - PIXEL_SIZE * 1.5, y, PIXEL_SIZE * 3, PIXEL_SIZE);
 
-  // 2. Main Body 
+  // Main Body 
   fill(baseBud);
   rect(x - PIXEL_SIZE * 1.5, y - PIXEL_SIZE * 1.5, PIXEL_SIZE * 3, PIXEL_SIZE * 2.5);
   
-  // 3. Highlight stripe
+  // Highlight stripe
   fill(highlightBud);
   rect(x - PIXEL_SIZE, y - PIXEL_SIZE * 1.5, PIXEL_SIZE / 2, PIXEL_SIZE * 2);
 }
