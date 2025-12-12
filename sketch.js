@@ -12,8 +12,8 @@ const projectData = {
                 <p><a href="https://editor.p5js.org/hanc190/full/TC91xLOUY" target="_blank">A1 - Memory Scene</a> </p>
                 <p><a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A2 - Face Generator</a> </p>
                 <p><a href="https://editor.p5js.org/hanc190/full/FNWqBbvMM" target="_blank">A3 - A neurodivergent clock</a> </p>
-                <p><a href="https://editor.p5js.org/hanc190/full/_VTLRhRZJ" target="_blank">A4 - Optical Illusion</a> </p>
-                <p><a href="https://editor.p5js.org/hanc190/full/C0CcPKFsF" target="_blank">A5 - An exquisite Corpse</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/C0CcPKFsF" target="_blank">A4 - Optical Illusion</a> </p>
+                <p><a href="https://editor.p5js.org/hanc190/full/_VTLRhRZJ" target="_blank">A5 - An exquisite Corpse</a> </p>
                 <p><a href="https://editor.p5js.org/hanc190/full/f4CO8CgRi" target="_blank">A6 - Data Garden</a> </p>
                 <p><a href="https://editor.p5js.org/hanc190/full/fZm5F-KNc" target="_blank">A7 - Day in my Life</a> </p>
                 <p><a href="https://chelseas.world" target="_blank">A8 - Chelsea's World</a>
