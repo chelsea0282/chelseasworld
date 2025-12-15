@@ -1,9 +1,10 @@
 /* TO IMPROVE ON
 * 1. Separate out into different files, kept in one file for now for simplicity of giving Gemini code assist context in the file
 * 2. Coding hygiene, remove unncessary code & repettive stuff that I got lazy and ran out of time in cleaning up
-* 3. 
-* 4. 
-* 5. 
+
+reflection:
+I like the design of this. I like the simple design.
+For the portfolio, I defintely tried to think more about what is the aesthetic that I want to convey on my website especially since I know that I'll be able to build it up from technical perspective. I like the world building that I had done so now as next steps I'll likely dive into the details more and build them out more.
 */
 
 // Global variable for state management
@@ -508,6 +509,7 @@ function drawRoutineGame() {
       let win = uncollectedCount === 0; 
       background(255, 239, 213);
       fill(50); 
+      noStroke();
       textSize(24); 
       drawBackButton();
       text("You're ready to start the day!", width/2, height/2 - 50);
