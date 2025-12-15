@@ -1,5 +1,13 @@
 // PROJECT CONTENT DATABASE
 // TOOD: move this into a different file later on.
+/* Reflections:
+- I love that this class made me build a website which has been on my TODO list for years.
+- Love that it was a great oppertunity to customize and build from scratch which is what I wanted all along.
+- much larger confidence that I can ddo anything technical after finishing the class (I know I could have before but maybe not as 100% confident as I am now). Before I knew I could understand, but now I know I can undersatnd and I can learn how to do things even if I might not know how to do it right off the bat. 
+- With the website, I love that I really leaned into the aesthetics the most and started there (spent the most time coming up with the concept and aesthetic of my website the most)
+- I will likely keep developing this webiste more for it to be mroe comprehensively holding all of my information. 
+*/
+
 /* FEEDBACK
 - full commit to the windows xp experience and go all in, make the clicking sounds, icons, full aesthetic. 
 - make clear what you're inspired by which is WindowsXP
