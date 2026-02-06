@@ -7,13 +7,30 @@
     <link rel="stylesheet" href="type_exploration.css">
 </head>
 <body>
-    <!-- <h1>This is a new page!</h1>
-    <p>This is a fresh index.html file.</p>
-    <a href="../index.html">Back to Main Page</a>  back link -->
+    <div id="container">
+        <div id="controls">
+            <h2>Controls</h2>
+            <button id="rotate-btn">Toggle Rotation</button>
+            <label for="spacing-slider">Word Spacing:</label>
+            <input type="range" id="spacing-slider" min="0" max="50" value="0">
+            <button id="time-btn">Start Time Effects</button>
+            <button id="fall-btn">Words Fall</button>
+            <button id="group-btn">Semantic Grouping</button>
 
-    <h1 id="type-title"></h1>
-    <p id="type-author"></p>
-    <div id="type-content"></div>
+            <button id="variation1">Variation 1: Rotation</button>
+            <button id="variation2">Variation 2: Spacing</button>
+            <button id="variation3">Variation 3: Time</button>
+            <button id="variation4">Variation 4: Falling</button>
+            <button id="variation5">Variation 5: Semantic Grouping</button>
+
+            <button id="reset-btn">Reset</button>
+        </div>
+        <div id="poem-display">
+            <h1 id="type-title"></h1>
+            <p id="type-author"></p>
+            <div id="type-content"></div>
+        </div>
+    </div>
     <script src="type_explorations.js"></script>
 </body>
 </html>
