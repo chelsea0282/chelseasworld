@@ -16,6 +16,7 @@
 - fix the small things like the spacing, etc. 
 - what is the relationship between the floating windows and the static folders?
 - maybe have a "launch app" button on the folder that opens the floating window?
+- I want to make this working on mobile as well
 */
 const projectData = {
     
