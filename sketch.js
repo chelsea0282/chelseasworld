@@ -50,6 +50,16 @@ const projectData = {
         `,
     },
 
+    'data-explorations': {
+        title: "Data Explorations",
+        description: `
+            <p>My lastest projects</p>
+            <ul>
+                <p> <a href="data_explorations/type_exploration.html" target="_blank">Type Assignment</a> </p>
+            </ul>
+        `,
+    },
+
     // Windows (Corresponds to data-project-id)
     // example data format
     // '3': {
