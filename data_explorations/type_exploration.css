@@ -39,7 +39,8 @@ body {
 /* Additional styles for manipulations */
 .word, .letter {
     display: inline-block;
-    transition: all 0.5s ease-in; /* Smooth transition for effects */
+    /* Specific transitions to prevent unwanted animations on load */
+    transition: transform 0.5s ease-in, filter 0.5s ease-in, color 0.5s ease-in, margin 0.5s ease-in;
 }
 
 .rotated {
