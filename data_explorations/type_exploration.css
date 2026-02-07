@@ -37,9 +37,9 @@ body {
 }
 
 /* Additional styles for manipulations */
-.word {
+.word, .letter {
     display: inline-block;
-    transition: all 0.5s ease-in; /* Smooth transition for falling */
+    transition: all 0.5s ease-in; /* Smooth transition for effects */
 }
 
 .rotated {
@@ -55,4 +55,20 @@ body {
     to {
         transform: translateY(100vh);
     }
+}
+
+/* Style for dynamically created variation buttons */
+.variation-btn {
+    display: block;
+    margin: 5px 0;
+    padding: 8px 12px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.variation-btn:hover {
+    background-color: #e0e0e0;
 }

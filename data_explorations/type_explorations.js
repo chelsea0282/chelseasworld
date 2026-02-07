@@ -5,11 +5,12 @@ let poemData; // Store the fetched data for re-processing
 
 // VARIATION CONTAINERS
 const variations = [
-    { id: 'rotate', action: toggleRotation },
-    { id: 'spacing', action: adjustSpacingVariation },
-    { id: 'time', action: startTimeEffects },
-    { id: 'fall', action: wordsFall },
-    { id: 'blur', action: blurWords },
+    { id: 'rotate', label: 'Rotation', action: toggleRotation },
+    { id: 'spacing', label: 'Random Spacing', action: adjustSpacingVariation },
+    { id: 'time', label: 'Time Pulse', action: startTimeEffects },
+    { id: 'fall', label: 'Gravity', action: wordsFall },
+    { id: 'blur', label: 'Distance Blur', action: blurWords },
+    { id: 'blur2', label: 'Extra Blur', action: blurWords },
     // To add more, just add an object here!
 ];
 
@@ -97,16 +98,16 @@ function setupControls() {
         semanticGrouping(words);
     });
 
-    // Attach variations to variation buttons
-    variations.forEach((v, index) => {
-        const btnId = `variation${index + 1}`;
-        const btn = document.getElementById(btnId);
-        if (btn) {
-            btn.addEventListener('click', () => {
-                reset();
-                v.action(words);
-            });
-        }
+    // Create variation buttons dynamically
+    variations.forEach(v => {
+        const btn = document.createElement('button');
+        btn.innerText = v.label;
+        btn.className = 'variation-btn';
+        btn.addEventListener('click', () => {
+            reset();
+            v.action(words);
+        });
+        controlsDiv.appendChild(btn);
     });
 
     document.getElementById('reset-btn').addEventListener('click', reset);
