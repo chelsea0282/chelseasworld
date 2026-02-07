@@ -1,101 +1,156 @@
 let words = [];
 let timeInterval;
+let splitMode = 'letter'; // 'word' or 'letter'
+let poemData; // Store the fetched data for re-processing
 
+// VARIATION CONTAINERS
+const variations = [
+    { id: 'rotate', action: toggleRotation },
+    { id: 'spacing', action: adjustSpacingVariation },
+    { id: 'time', action: startTimeEffects },
+    { id: 'fall', action: wordsFall },
+    { id: 'blur', action: blurWords },
+    // To add more, just add an object here!
+];
+
+// LOAD IN THE POEM FROM TYPE.TXT FILE
 fetch('type.txt')
-    .then(response => response.text())
+    .then(res => res.text())
     .then(data => {
-        // Split the text into an array of lines
-        const lines = data.split(/\r?\n/);
+        poemData = data; // Store for toggle
+        setupPoem(data, splitMode);
+        setupControls();
+    })
+    .catch(error => {
+        console.error('Error fetching type.txt:', error);
+    });
 
-        // Extract title (first line) and author (second line)
-        const title = lines[0];
-        const author = lines[1];
+// POEM SETUP
+function setupPoem(data, mode) {
+    const lines = data.split(/\r?\n/);
+    document.getElementById('type-title').innerText = lines[0];
+    document.getElementById('type-author').innerText = lines[1];
 
-        // The rest of the content (join from the third line onwards)
-        const content = lines.slice(2).join('\n');
-
-        // Place the content into the HTML elements
-        document.getElementById('type-title').innerText = title;
-        document.getElementById('type-author').innerText = author;
-
-        // Split content into words and wrap each in a span, preserving whitespace and line breaks
-        const contentDiv = document.getElementById('type-content');
-        const parts = content.split(/(\s+)/);  // Split and capture whitespace
-        words = [];
-        parts.forEach(part => {
-            if (part.trim() === '') {
-                // It's whitespace (including line breaks), add as text node
-                contentDiv.appendChild(document.createTextNode(part));
-            } else {
-                // It's a word, wrap in span
+    const contentDiv = document.getElementById('type-content');
+    const content = lines.slice(2).join('\n'); //preserve line breaks
+    
+    // Clear and build spans
+    contentDiv.innerHTML = ''; 
+    words = [];
+    
+    // Process content while preserving whitespace
+    content.split(/(\s+)/).forEach(part => {
+        if (part.trim() === '') {
+            contentDiv.appendChild(document.createTextNode(part));
+        } else {
+            if (mode === 'word') {
+                // Wrap entire words
                 const span = document.createElement('span');
                 span.className = 'word';
                 span.innerText = part;
                 contentDiv.appendChild(span);
                 words.push(span);
+            } else if (mode === 'letter') {
+                // Wrap each letter individually
+                part.split('').forEach(letter => {
+                    const span = document.createElement('span');
+                    span.className = 'letter';
+                    span.innerText = letter;
+                    contentDiv.appendChild(span);
+                    words.push(span);
+                });
             }
-        });
+        }
+    });
+}
 
-        // Add event listeners for controls
-        document.getElementById('rotate-btn').addEventListener('click', toggleRotation);
-        document.getElementById('spacing-slider').addEventListener('input', adjustSpacing);
-        document.getElementById('time-btn').addEventListener('click', startTimeEffects);
-        document.getElementById('fall-btn').addEventListener('click', wordsFall);
-        document.getElementById('group-btn').addEventListener('click', semanticGrouping);
+function setupControls() {
+    // Add toggle button for split mode
+    const controlsDiv = document.getElementById('controls');
+    const toggleBtn = document.createElement('button');
+    toggleBtn.id = 'split-toggle-btn';
+    toggleBtn.innerText = `Mode: ${splitMode === 'word' ? 'Word' : 'Letter'}`;
+    toggleBtn.addEventListener('click', () => {
+        splitMode = splitMode === 'word' ? 'letter' : 'word';
+        toggleBtn.innerText = `Mode: ${splitMode === 'word' ? 'Word' : 'Letter'}`;
+        reset(); // Clear any active effects
+        setupPoem(poemData, splitMode); // Re-process with new mode
+    });
+    controlsDiv.appendChild(toggleBtn);
 
-        // Add event listeners for variations
-        document.getElementById('variation1').addEventListener('click', toggleRotation);
-        document.getElementById('variation2').addEventListener('click', adjustSpacing);
-        document.getElementById('variation3').addEventListener('click', startTimeEffects);
-        document.getElementById('variation4').addEventListener('click', wordsFall);
-        document.getElementById('variation5').addEventListener('click', semanticGrouping);
-        document.getElementById('reset-btn').addEventListener('click', reset);
-
-        document.getElementById('reset-btn').addEventListener('click', reset);
-    })
-    .catch(error => {
-        console.error('Error fetching the text file:', error);
+    // Attach to existing buttons
+    document.getElementById('rotate-btn').addEventListener('click', () => {
+        reset();
+        toggleRotation(words);
+    });
+    document.getElementById('spacing-slider').addEventListener('input', adjustSpacing);
+    document.getElementById('time-btn').addEventListener('click', () => {
+        reset();
+        startTimeEffects(words);
+    });
+    document.getElementById('fall-btn').addEventListener('click', () => {
+        reset();
+        wordsFall(words);
+    });
+    document.getElementById('group-btn').addEventListener('click', () => {
+        reset();
+        semanticGrouping(words);
     });
 
-// functions for the manipulations
+    // Attach variations to variation buttons
+    variations.forEach((v, index) => {
+        const btnId = `variation${index + 1}`;
+        const btn = document.getElementById(btnId);
+        if (btn) {
+            btn.addEventListener('click', () => {
+                reset();
+                v.action(words);
+            });
+        }
+    });
 
-function toggleRotation() {
+    document.getElementById('reset-btn').addEventListener('click', reset);
+}
+
+// 4. MODULAR MANIPULATIONS
+function toggleRotation(words) {
     words.forEach(word => word.classList.toggle('rotated'));
+}
+
+function adjustSpacingVariation(words) {
+    words.forEach(word => word.style.marginRight = `${Math.random() * 20}px`);
+}
+
+function startTimeEffects(words) {
+    if (timeInterval) clearInterval(timeInterval);
+    let angle = 0;
+    timeInterval = setInterval(() => {
+        angle += 5;
+        words.forEach(word => word.style.transform = `rotate(${angle}deg)`);
+    }, 100);
+}
+
+function wordsFall(words) {
+    words.forEach((word, index) => {
+        setTimeout(() => word.classList.add('falling'), index * 50);
+    });
+}
+
+function semanticGrouping(words) {
+    words.forEach(word => {
+        const len = word.innerText.length;
+        word.style.color = len < 3 ? 'red' : len < 5 ? 'blue' : 'green';
+    });
+}
+
+function blurWords(words) {
+    words.forEach(w => w.style.filter = `blur(${Math.random() * 4}px)`);
 }
 
 function adjustSpacing(event) {
     const spacing = event.target.value;
     words.forEach(word => {
         word.style.marginRight = spacing + 'px';
-    });
-}
-
-function startTimeEffects() {
-    if (timeInterval) clearInterval(timeInterval);
-    let angle = 0;
-    timeInterval = setInterval(() => {
-        angle += 5;
-        words.forEach(word => {
-            word.style.transform = `rotate(${angle}deg)`;
-        });
-    }, 100);
-}
-
-function wordsFall() {
-    words.forEach((word, index) => {
-        setTimeout(() => {
-            word.classList.add('falling');
-        }, index * 100);
-    });
-}
-
-function semanticGrouping() {
-    // Simple grouping: color words based on length
-    words.forEach(word => {
-        const length = word.innerText.trim().length;
-        if (length < 3) word.style.color = 'red';
-        else if (length < 5) word.style.color = 'blue';
-        else word.style.color = 'green';
     });
 }
 
