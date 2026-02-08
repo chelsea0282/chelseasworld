@@ -57,18 +57,7 @@ function setupPoem(data, mode) {
 
 //TODO - CONTROLS SETUP
 function setupControls() {
-    // Add toggle button for split mode
     const controlsDiv = document.getElementById('controls');
-    const toggleBtn = document.createElement('button');
-    toggleBtn.id = 'split-toggle-btn';
-    toggleBtn.innerText = `Mode: ${splitMode === 'word' ? 'Word' : 'Letter'}`;
-    toggleBtn.addEventListener('click', () => {
-        splitMode = splitMode === 'word' ? 'letter' : 'word';
-        toggleBtn.innerText = `Mode: ${splitMode === 'word' ? 'Word' : 'Letter'}`;
-        reset(); // Clear any active effects
-        setupPoem(poemData, splitMode); // Re-process with new mode
-    });
-    controlsDiv.appendChild(toggleBtn);
 
     // Attach all predefined controls
     controlConfigs.forEach(config => {
@@ -80,16 +69,46 @@ function setupControls() {
 
     // Create variation buttons dynamically
     variations.forEach(v => {
-        const btn = document.createElement('button');
-        btn.innerText = v.label;
-        btn.className = 'variation-btn';
-        btn.addEventListener('click', () => {
-            reset();
-            v.action(words);
-        });
-        controlsDiv.appendChild(btn);
+        if (v.type === 'header') {
+            const header = document.createElement('h3');
+            header.innerText = v.label;
+            header.style.marginTop = '15px';
+            header.style.marginBottom = '5px';
+            controlsDiv.appendChild(header);
+        } else if (v.type === 'range') {
+            const label = document.createElement('label');
+            label.innerText = v.label;
+            label.htmlFor = v.id;
+            label.style.display = 'block';
+            
+            const input = document.createElement('input');
+            input.type = 'range';
+            input.id = v.id;
+            input.min = v.min;
+            input.max = v.max;
+            input.value = v.value;
+            input.addEventListener('input', v.action);
+            
+            controlsDiv.appendChild(label);
+            controlsDiv.appendChild(input);
+        } else {
+            const btn = document.createElement('button');
+            if (v.id) btn.id = v.id;
+            btn.innerText = v.label;
+            btn.className = 'variation-btn';
+            btn.addEventListener('click', () => {
+                // reset();
+                v.action(words);
+            });
+            controlsDiv.appendChild(btn);
+        }
     });
 }
+
+// CONTROL CONFIGURATION
+const controlConfigs = [
+    { id: 'reset-btn', event: 'click', action: reset },
+];
 
 //TODO - RESET FUNCTIONALITY
 function reset() {
@@ -104,23 +123,33 @@ function reset() {
         // Ensure transform is reset (overrides animation 'forwards')
         word.style.transform = 'none';
     });
+
+    // Reset the spacing slider to 0 to match the cleared styles
+    const slider = document.getElementById('spacing-slider');
+    if (slider) slider.value = 0;
 }
 
 // TODO - BUTTONS FOR THE DIFFERENT VARIATIONS
 const variations = [
     // dimensions
+    { type: 'header', label: 'Dimensions' },
     { id: 'rotate', label: 'Rotation', action: () => rotate(words, 45) },
     { id: 'spacing', label: 'Spacing', action: () => alterSpacing(words, 5) },
+    { type: 'range', id: 'spacing-slider', label: '', min: 0, max: 50, value: 0, action: (e) => alterSpacing(words, e.target.value) },
     { id: 'fontsize', label: 'Font Size', action: () => changeFontSize(words, 50) },
     { id: 'blur', label: 'Blur', action: () => blurWords(words, 5) },
+    { id: 'fall', label: 'Fall', action: () => wordsFall(words) },
     // { id: 'time', label: 'Time Pulse', action: startTimeEffects },
     // { id: 'fall', label: 'Gravity', action: wordsFall },
     // remove all the linebreaks
     
     // rules - for now just color showing
+    { type: 'header', label: 'Rules' },
+    { id: 'split-toggle-btn', label: 'Mode: Letter', action: toggleSplitMode },
     { id: 'Vowel_Consonant', label: 'Vowel/Consonant', action: vowelConsonantGrouping }, 
     { id: 'Word_Length', label: 'Word Length', action: lengthGrouping },
     { id: 'Semantic_NLP', label: 'Semantic NLP', action: processPoemSemantics },
+    { id: 'Ascenders', label: 'Ascenders', action: highlightAscenders },
     
     // variations
     // rotation (technically I can do 45, 90, 180, mix of these)
@@ -129,22 +158,12 @@ const variations = [
     
 ];
 
-// CONTROL CONFIGURATION
-const controlConfigs = [
-    { id: 'rotate-btn', event: 'click', action: () => { reset(); toggleRotation(words, 45); } },
-    { id: 'spacing-slider', event: 'input', action: adjustSpacing },
-    // { id: 'time-btn', event: 'click', action: () => { reset(); startTimeEffects(words); } },
-    { id: 'fall-btn', event: 'click', action: () => { reset(); wordsFall(words); } },
-    { id: 'group-btn', event: 'click', action: () => { reset(); processPoemSemantics(words); } },
-    { id: 'reset-btn', event: 'click', action: reset },
-];
-
 //TODO - DIMENSIONS/MANIPULATION TYPE 
 function rotate(words, degrees) {
     words.forEach(word => {
         // const hasRotate = word.style.transform && word.style.transform.includes('rotate');
         // word.style.transform = hasRotate ? '' : `rotate(${degrees}deg)`;
-        word.style.transform = `rotate(${degrees}deg)`;
+        word.style.transform += `rotate(${degrees}deg)`;
     });
 }
 
@@ -153,7 +172,14 @@ function alterSpacing(words, pixels) {
         // word.style.marginRight = `${Math.random() * 20}px`
         word.style.marginRight = `${pixels}px`
     });
+
+    // Update the slider UI to reflect the current spacing value
+    const slider = document.getElementById('spacing-slider');
+    if (slider) {
+        slider.value = pixels;
+    }
 }
+
 
 function changeFontSize(words, size) {
     words.forEach(word => {
@@ -168,7 +194,26 @@ function blurWords(words, blurAmount) {
     words.forEach(w => w.style.filter = `blur(${blurAmount}px)`);
 }
 
+function wordsFall(words) {
+    // Clear any existing fall timeouts
+    fallTimeouts.forEach(clearTimeout);
+    fallTimeouts = [];
+    
+    words.forEach((word, index) => {
+        const timeoutId = setTimeout(() => word.classList.add('falling'), index * 50);
+        fallTimeouts.push(timeoutId);
+    });
+}
+
 //TODO - RULES
+function toggleSplitMode() {
+    splitMode = splitMode === 'word' ? 'letter' : 'word';
+    const btn = document.getElementById('split-toggle-btn');
+    if (btn) btn.innerText = `Mode: ${splitMode === 'word' ? 'Word' : 'Letter'}`;
+    reset(); // Clear any active effects
+    setupPoem(poemData, splitMode); // Re-process with new mode
+}
+
 function vowelConsonantGrouping(words, func1, func2) {
     const vowels = 'aeiouAEIOU';
     words.forEach(word => {
@@ -193,6 +238,23 @@ function lengthGrouping(words) {
     words.forEach(word => {
         const len = word.innerText.length;
         word.style.color = len < 3 ? 'red' : len < 5 ? 'blue' : 'green';
+    });
+}
+
+// separating word/letters by their height
+function highlightAscenders(elements) {
+    // b, d, f, h, k, l, t and all Uppercase letters.
+    // (m, n, a, c, e, etc. stay within the midline)
+    const ascenderRegex = /[bdfhkltA-Z]/;
+
+    elements.forEach(el => {
+        if (ascenderRegex.test(el.innerText)) {
+            el.style.color = 'royalblue';
+            el.style.fontWeight = 'bold';
+            el.style.transform += ' translateY(-5px)'; // Move up slightly to emphasize height
+        } else {
+            el.style.color = 'lightgray'; // Dim letters that don't go above midline
+        }
     });
 }
 
@@ -262,16 +324,6 @@ function processPoemSemantics(wordElements) {
     }
 }
 
-
-
-function adjustSpacing(event) {
-    const spacing = event.target.value;
-    words.forEach(word => {
-        word.style.marginRight = spacing + 'px';
-    });
-}
-
-
 // 5. COMBO VARIATIONS
 function sizeLetter(words) {
     words.forEach(word => word.className = 'letter');
@@ -288,14 +340,3 @@ function sizeLetter(words) {
 //         words.forEach(word => word.style.transform = `rotate(${angle}deg)`);
 //     }, 100);
 // }
-
-function wordsFall(words) {
-    // Clear any existing fall timeouts
-    fallTimeouts.forEach(clearTimeout);
-    fallTimeouts = [];
-    
-    words.forEach((word, index) => {
-        const timeoutId = setTimeout(() => word.classList.add('falling'), index * 50);
-        fallTimeouts.push(timeoutId);
-    });
-}
