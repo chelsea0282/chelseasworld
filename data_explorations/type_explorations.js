@@ -111,13 +111,16 @@ const variations = [
     // core functionalities 
     { id: 'rotate', label: 'Rotation', action: () => rotate(words, 45) },
     { id: 'spacing', label: 'Spacing', action: () => alterSpacing(words, 5) },
+    { id: 'fontsize', label: 'Font Size', action: () => changeFontSize(words, 50) },
+    { id: 'blur', label: 'Blur', action: () => blurWords(words, 5) },
     // { id: 'time', label: 'Time Pulse', action: startTimeEffects },
-    { id: 'fall', label: 'Gravity', action: wordsFall },
-    { id: 'blur', label: 'Distance Blur', action: blurWords },
-    { id: 'fontsize', label: 'Font Size', action: changeFontSize },
+    // { id: 'fall', label: 'Gravity', action: wordsFall },
+    // remove all the linebreaks
+    
     
     // variations
     // rotation (technically I can do 45, 90, 180, mix of these)
+    // spacing (randomized, larger, smaller based on different rules)
     { id: 'Size_Letter', label: 'Size Letter', action: sizeLetter },
     { id: 'Word_Length', label: 'Word Length', action: semanticGrouping },
     { id: 'Semantic_NLP', label: 'Semantic NLP', action: processPoemSemantics },
@@ -149,6 +152,42 @@ function alterSpacing(words, pixels) {
     });
 }
 
+function changeFontSize(words, size) {
+    words.forEach(word => {
+        // const randomSize = Math.random() * 30 + 10; // Size between 10px and 40px
+        // word.style.fontSize = `${randomSize}px`;
+        word.style.fontSize = `${size}px`;
+    });
+}
+
+function blurWords(words, blurAmount) {
+    // words.forEach(w => w.style.filter = `blur(${Math.random() * 4}px)`);
+    words.forEach(w => w.style.filter = `blur(${blurAmount}px)`);
+}
+
+function semanticGrouping(words) {
+    words.forEach(word => {
+        const len = word.innerText.length;
+        word.style.color = len < 3 ? 'red' : len < 5 ? 'blue' : 'green';
+    });
+}
+
+function adjustSpacing(event) {
+    const spacing = event.target.value;
+    words.forEach(word => {
+        word.style.marginRight = spacing + 'px';
+    });
+}
+
+
+// 5. COMBO VARIATIONS
+function sizeLetter(words) {
+    words.forEach(word => word.className = 'letter');
+    changeFontSize(words);
+}
+
+// TODO - PONDER ON THIS ONE A BIT MORE BC IT'S MORE COMPLICATED
+
 // function startTimeEffects(words) {
 //     if (timeInterval) clearInterval(timeInterval);
 //     let angle = 0;
@@ -169,32 +208,6 @@ function wordsFall(words) {
     });
 }
 
-function semanticGrouping(words) {
-    words.forEach(word => {
-        const len = word.innerText.length;
-        word.style.color = len < 3 ? 'red' : len < 5 ? 'blue' : 'green';
-    });
-}
-
-function blurWords(words) {
-    words.forEach(w => w.style.filter = `blur(${Math.random() * 4}px)`);
-}
-
-function changeFontSize(words) {
-    words.forEach(word => {
-        const randomSize = Math.random() * 30 + 10; // Size between 10px and 40px
-        word.style.fontSize = `${randomSize}px`;
-    });
-}
-
-function adjustSpacing(event) {
-    const spacing = event.target.value;
-    words.forEach(word => {
-        word.style.marginRight = spacing + 'px';
-    });
-}
-
-// TODO - PONDER ON THIS ONE A BIT MORE BC IT'S MORE COMPLICATED
 function processPoemSemantics(wordElements) {
     console.log('processPoemSemantics called with', wordElements.length, 'elements');
     
@@ -240,8 +253,3 @@ function processPoemSemantics(wordElements) {
     }
 }
 
-// 5. COMBO VARIATIONS
-function sizeLetter(words) {
-    words.forEach(word => word.className = 'letter');
-    changeFontSize(words);
-}
