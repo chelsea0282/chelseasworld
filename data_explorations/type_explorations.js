@@ -135,7 +135,7 @@ const controlConfigs = [
     { id: 'spacing-slider', event: 'input', action: adjustSpacing },
     // { id: 'time-btn', event: 'click', action: () => { reset(); startTimeEffects(words); } },
     { id: 'fall-btn', event: 'click', action: () => { reset(); wordsFall(words); } },
-    { id: 'group-btn', event: 'click', action: () => { reset(); lengthGrouping(words); } },
+    { id: 'group-btn', event: 'click', action: () => { reset(); processPoemSemantics(words); } },
     { id: 'reset-btn', event: 'click', action: reset },
 ];
 
@@ -197,28 +197,48 @@ function lengthGrouping(words) {
 }
 
 function processPoemSemantics(wordElements) {
+    // 1. Safety Check: Ensure libraries are loaded
+    if (typeof nlp === 'undefined' ) {
+        console.warn("Missing libraries: Compromise (nlp) ");
+        alert("This feature requires the 'compromise'  libraries.");
+        return;
+    }
+
+    if (typeof  typeof Sentiment === 'undefined') {
+        console.warn("Missing libraries:  Sentiment.");
+        alert("This feature requires the 'sentiment' libraries.");
+        return;
+    }
+
+    // 2. Mode Check: Semantics only work on whole words, not letters.
+    if (splitMode === 'letter') {
+        splitMode = 'word';
+        const toggleBtn = document.getElementById('split-toggle-btn');
+        if (toggleBtn) toggleBtn.innerText = 'Mode: Word';
+        
+        // Re-render the poem in word mode
+        setupPoem(poemData, splitMode);
+        // Update the local reference to the new global words array
+        wordElements = words; 
+    }
+
     console.log('processPoemSemantics called with', wordElements.length, 'elements');
     
     try {
         const sentiment = new Sentiment();
-        console.log('Sentiment loaded:', sentiment);
 
         wordElements.forEach(wordEl => {
             const text = wordEl.innerText.trim();
-            console.log('Processing word:', text);
             
             const doc = nlp(text);
-            console.log('NLP doc:', doc);
 
             // 1. FILTER: Is it a "content" word? 
             // We look for Nouns, Verbs, Adjectives, or Adverbs.
             const isImportant = doc.match('#Noun || #Verb || #Adjective || #Adverb').found;
-            console.log('Is important:', isImportant);
 
             if (isImportant) {
                 // 2. CONNOTATION: Check the sentiment score
                 const result = sentiment.analyze(text);
-                console.log('Sentiment result:', result);
                 
                 // Apply visual styles based on connotation
                 if (result.score > 0) {
@@ -231,6 +251,7 @@ function processPoemSemantics(wordElements) {
                     wordEl.style.color = 'white';      // Neutral important word
                     wordEl.style.borderBottom = '1px solid gray';
                 }
+                wordEl.style.opacity = '1';
             } else {
                 // Structural words (the, of, and) get dimmed
                 wordEl.style.opacity = '0.3';
@@ -278,6 +299,3 @@ function wordsFall(words) {
         fallTimeouts.push(timeoutId);
     });
 }
-
-
-
