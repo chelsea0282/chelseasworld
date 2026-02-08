@@ -109,8 +109,8 @@ function reset() {
 // TODO - BUTTONS FOR THE DIFFERENT VARIATIONS
 const variations = [
     // core functionalities 
-    { id: 'rotate', label: 'Rotation', action: () => toggleRotation(words, 45) },
-    { id: 'spacing', label: 'Random Spacing', action: adjustSpacingVariation },
+    { id: 'rotate', label: 'Rotation', action: () => rotate(words, 45) },
+    { id: 'spacing', label: 'Spacing', action: () => alterSpacing(words, 5) },
     // { id: 'time', label: 'Time Pulse', action: startTimeEffects },
     { id: 'fall', label: 'Gravity', action: wordsFall },
     { id: 'blur', label: 'Distance Blur', action: blurWords },
@@ -133,16 +133,20 @@ const controlConfigs = [
     { id: 'reset-btn', event: 'click', action: reset },
 ];
 
-//TODO - DIMENSIONS/MANIPULATION TYPE
-function toggleRotation(words, degrees) {
+//TODO - DIMENSIONS/MANIPULATION TYPE (SUPPORT FUNCTIONS)
+function rotate(words, degrees) {
     words.forEach(word => {
-        const hasRotate = word.style.transform && word.style.transform.includes('rotate');
-        word.style.transform = hasRotate ? '' : `rotate(${degrees}deg)`;
+        // const hasRotate = word.style.transform && word.style.transform.includes('rotate');
+        // word.style.transform = hasRotate ? '' : `rotate(${degrees}deg)`;
+        word.style.transform = `rotate(${degrees}deg)`;
     });
 }
 
-function adjustSpacingVariation(words) {
-    words.forEach(word => word.style.marginRight = `${Math.random() * 20}px`);
+function alterSpacing(words, pixels) {
+    words.forEach(word => {
+        // word.style.marginRight = `${Math.random() * 20}px`
+        word.style.marginRight = `${pixels}px`
+    });
 }
 
 // function startTimeEffects(words) {
