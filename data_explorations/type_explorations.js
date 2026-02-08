@@ -4,18 +4,7 @@ let splitMode = 'letter'; // 'word' or 'letter'
 let poemData; // Store the fetched data for re-processing
 let fallTimeouts = []; // Store timeout IDs for falling animation
 
-// VARIATION CONTAINERS
-const variations = [
-    { id: 'rotate', label: 'Rotation', action: toggleRotation },
-    { id: 'spacing', label: 'Random Spacing', action: adjustSpacingVariation },
-    { id: 'time', label: 'Time Pulse', action: startTimeEffects },
-    { id: 'fall', label: 'Gravity', action: wordsFall },
-    { id: 'blur', label: 'Distance Blur', action: blurWords },
-    { id: 'fontsize', label: 'Font Size', action: changeFontSize },
-    // To add more, just add an object here!
-];
-
-// LOAD IN THE POEM FROM TYPE.TXT FILE
+//TODO - POEM FETCH
 fetch('type.txt')
     .then(res => res.text())
     .then(data => {
@@ -27,7 +16,7 @@ fetch('type.txt')
         console.error('Error fetching type.txt:', error);
     });
 
-// POEM SETUP
+//TODO - POEM SETUP
 function setupPoem(data, mode) {
     const lines = data.split(/\r?\n/);
     document.getElementById('type-title').innerText = lines[0];
@@ -66,6 +55,7 @@ function setupPoem(data, mode) {
     });
 }
 
+//TODO - CONTROLS SETUP
 function setupControls() {
     // Add toggle button for split mode
     const controlsDiv = document.getElementById('controls');
@@ -80,23 +70,12 @@ function setupControls() {
     });
     controlsDiv.appendChild(toggleBtn);
 
-    // Attach to existing buttons
-    document.getElementById('rotate-btn').addEventListener('click', () => {
-        reset();
-        toggleRotation(words);
-    });
-    document.getElementById('spacing-slider').addEventListener('input', adjustSpacing);
-    document.getElementById('time-btn').addEventListener('click', () => {
-        reset();
-        startTimeEffects(words);
-    });
-    document.getElementById('fall-btn').addEventListener('click', () => {
-        reset();
-        wordsFall(words);
-    });
-    document.getElementById('group-btn').addEventListener('click', () => {
-        reset();
-        semanticGrouping(words);
+    // Attach all predefined controls
+    controlConfigs.forEach(config => {
+        const element = document.getElementById(config.id);
+        if (element) {
+            element.addEventListener(config.event, config.action);
+        }
     });
 
     // Create variation buttons dynamically
@@ -110,27 +89,70 @@ function setupControls() {
         });
         controlsDiv.appendChild(btn);
     });
-
-    document.getElementById('reset-btn').addEventListener('click', reset);
 }
 
-// 4. MODULAR MANIPULATIONS
-function toggleRotation(words) {
-    words.forEach(word => word.classList.toggle('rotated'));
+//TODO - RESET FUNCTIONALITY
+function reset() {
+    if (timeInterval) clearInterval(timeInterval);
+    // Clear any pending fall timeouts
+    fallTimeouts.forEach(clearTimeout);
+    fallTimeouts = [];
+    
+    words.forEach(word => {
+        word.className = splitMode === 'word' ? 'word' : 'letter';
+        word.style = '';
+        // Ensure transform is reset (overrides animation 'forwards')
+        word.style.transform = 'none';
+    });
+}
+
+// TODO - BUTTONS FOR THE DIFFERENT VARIATIONS
+const variations = [
+    // core functionalities 
+    { id: 'rotate', label: 'Rotation', action: () => toggleRotation(words, 45) },
+    { id: 'spacing', label: 'Random Spacing', action: adjustSpacingVariation },
+    // { id: 'time', label: 'Time Pulse', action: startTimeEffects },
+    { id: 'fall', label: 'Gravity', action: wordsFall },
+    { id: 'blur', label: 'Distance Blur', action: blurWords },
+    { id: 'fontsize', label: 'Font Size', action: changeFontSize },
+    
+    // variations
+    // rotation (technically I can do 45, 90, 180, mix of these)
+    { id: 'Size_Letter', label: 'Size Letter', action: sizeLetter },
+    { id: 'Word_Length', label: 'Word Length', action: semanticGrouping },
+    { id: 'Semantic_NLP', label: 'Semantic NLP', action: processPoemSemantics },
+];
+
+// CONTROL CONFIGURATION
+const controlConfigs = [
+    { id: 'rotate-btn', event: 'click', action: () => { reset(); toggleRotation(words, 45); } },
+    { id: 'spacing-slider', event: 'input', action: adjustSpacing },
+    // { id: 'time-btn', event: 'click', action: () => { reset(); startTimeEffects(words); } },
+    { id: 'fall-btn', event: 'click', action: () => { reset(); wordsFall(words); } },
+    { id: 'group-btn', event: 'click', action: () => { reset(); semanticGrouping(words); } },
+    { id: 'reset-btn', event: 'click', action: reset },
+];
+
+//TODO - DIMENSIONS/MANIPULATION TYPE
+function toggleRotation(words, degrees) {
+    words.forEach(word => {
+        const hasRotate = word.style.transform && word.style.transform.includes('rotate');
+        word.style.transform = hasRotate ? '' : `rotate(${degrees}deg)`;
+    });
 }
 
 function adjustSpacingVariation(words) {
     words.forEach(word => word.style.marginRight = `${Math.random() * 20}px`);
 }
 
-function startTimeEffects(words) {
-    if (timeInterval) clearInterval(timeInterval);
-    let angle = 0;
-    timeInterval = setInterval(() => {
-        angle += 5;
-        words.forEach(word => word.style.transform = `rotate(${angle}deg)`);
-    }, 100);
-}
+// function startTimeEffects(words) {
+//     if (timeInterval) clearInterval(timeInterval);
+//     let angle = 0;
+//     timeInterval = setInterval(() => {
+//         angle += 5;
+//         words.forEach(word => word.style.transform = `rotate(${angle}deg)`);
+//     }, 100);
+// }
 
 function wordsFall(words) {
     // Clear any existing fall timeouts
@@ -168,16 +190,54 @@ function adjustSpacing(event) {
     });
 }
 
-function reset() {
-    if (timeInterval) clearInterval(timeInterval);
-    // Clear any pending fall timeouts
-    fallTimeouts.forEach(clearTimeout);
-    fallTimeouts = [];
+// TODO - PONDER ON THIS ONE A BIT MORE BC IT'S MORE COMPLICATED
+function processPoemSemantics(wordElements) {
+    console.log('processPoemSemantics called with', wordElements.length, 'elements');
     
-    words.forEach(word => {
-        word.className = splitMode === 'word' ? 'word' : 'letter';
-        word.style = '';
-        // Ensure transform is reset (overrides animation 'forwards')
-        word.style.transform = 'none';
-    });
+    try {
+        const sentiment = new Sentiment();
+        console.log('Sentiment loaded:', sentiment);
+
+        wordElements.forEach(wordEl => {
+            const text = wordEl.innerText.trim();
+            console.log('Processing word:', text);
+            
+            const doc = nlp(text);
+            console.log('NLP doc:', doc);
+
+            // 1. FILTER: Is it a "content" word? 
+            // We look for Nouns, Verbs, Adjectives, or Adverbs.
+            const isImportant = doc.match('#Noun || #Verb || #Adjective || #Adverb').found;
+            console.log('Is important:', isImportant);
+
+            if (isImportant) {
+                // 2. CONNOTATION: Check the sentiment score
+                const result = sentiment.analyze(text);
+                console.log('Sentiment result:', result);
+                
+                // Apply visual styles based on connotation
+                if (result.score > 0) {
+                    wordEl.style.color = 'gold';       // Positive connotation
+                    wordEl.style.fontWeight = 'bold';
+                } else if (result.score < 0) {
+                    wordEl.style.color = 'crimson';    // Negative connotation
+                    wordEl.style.fontWeight = 'bold';
+                } else {
+                    wordEl.style.color = 'white';      // Neutral important word
+                    wordEl.style.borderBottom = '1px solid gray';
+                }
+            } else {
+                // Structural words (the, of, and) get dimmed
+                wordEl.style.opacity = '0.3';
+            }
+        });
+    } catch (error) {
+        console.error('Error in processPoemSemantics:', error);
+    }
+}
+
+// 5. COMBO VARIATIONS
+function sizeLetter(words) {
+    words.forEach(word => word.className = 'letter');
+    changeFontSize(words);
 }

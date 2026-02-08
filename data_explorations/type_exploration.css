@@ -33,7 +33,7 @@ body {
 #type-content {
     white-space: pre-wrap; /* Preserve line breaks */
     font-size: 18px;
-    line-height: 1.5;
+    line-height: 1; 
 }
 
 /* Additional styles for manipulations */
@@ -41,10 +41,6 @@ body {
     display: inline-block;
     /* Specific transitions to prevent unwanted animations on load */
     transition: transform 0.5s ease-in, filter 0.5s ease-in, color 0.5s ease-in, margin 0.5s ease-in, font-size 0.5s ease-in;
-}
-
-.rotated {
-    transform: rotate(45deg);
 }
 
 .falling {
