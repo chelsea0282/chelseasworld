@@ -2,6 +2,7 @@ let words = [];
 let timeInterval;
 let splitMode = 'letter'; // 'word' or 'letter'
 let poemData; // Store the fetched data for re-processing
+let fallTimeouts = []; // Store timeout IDs for falling animation
 
 // VARIATION CONTAINERS
 const variations = [
@@ -10,7 +11,7 @@ const variations = [
     { id: 'time', label: 'Time Pulse', action: startTimeEffects },
     { id: 'fall', label: 'Gravity', action: wordsFall },
     { id: 'blur', label: 'Distance Blur', action: blurWords },
-    { id: 'blur2', label: 'Extra Blur', action: blurWords },
+    { id: 'fontsize', label: 'Font Size', action: changeFontSize },
     // To add more, just add an object here!
 ];
 
@@ -132,8 +133,13 @@ function startTimeEffects(words) {
 }
 
 function wordsFall(words) {
+    // Clear any existing fall timeouts
+    fallTimeouts.forEach(clearTimeout);
+    fallTimeouts = [];
+    
     words.forEach((word, index) => {
-        setTimeout(() => word.classList.add('falling'), index * 50);
+        const timeoutId = setTimeout(() => word.classList.add('falling'), index * 50);
+        fallTimeouts.push(timeoutId);
     });
 }
 
@@ -148,6 +154,13 @@ function blurWords(words) {
     words.forEach(w => w.style.filter = `blur(${Math.random() * 4}px)`);
 }
 
+function changeFontSize(words) {
+    words.forEach(word => {
+        const randomSize = Math.random() * 30 + 10; // Size between 10px and 40px
+        word.style.fontSize = `${randomSize}px`;
+    });
+}
+
 function adjustSpacing(event) {
     const spacing = event.target.value;
     words.forEach(word => {
@@ -157,8 +170,14 @@ function adjustSpacing(event) {
 
 function reset() {
     if (timeInterval) clearInterval(timeInterval);
+    // Clear any pending fall timeouts
+    fallTimeouts.forEach(clearTimeout);
+    fallTimeouts = [];
+    
     words.forEach(word => {
-        word.className = 'word';
+        word.className = splitMode === 'word' ? 'word' : 'letter';
         word.style = '';
+        // Ensure transform is reset (overrides animation 'forwards')
+        word.style.transform = 'none';
     });
 }
