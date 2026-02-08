@@ -204,7 +204,7 @@ function processPoemSemantics(wordElements) {
         return;
     }
 
-    if (typeof  typeof Sentiment === 'undefined') {
+    if (typeof Sentiment === 'undefined') {
         console.warn("Missing libraries:  Sentiment.");
         alert("This feature requires the 'sentiment' libraries.");
         return;
