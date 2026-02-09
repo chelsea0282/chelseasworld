@@ -221,8 +221,8 @@ function toggleSplitMode() {
     splitMode = splitMode === 'word' ? 'letter' : 'word';
     const btn = document.getElementById('split-toggle-btn');
     if (btn) btn.innerText = `Mode: ${splitMode === 'word' ? 'Word' : 'Letter'}`;
-    reset(); // Clear any active effects
     setupPoem(poemData, splitMode); // Re-process with new mode
+    applyAllEffects();
 }
 // add line break toggle
 
@@ -230,8 +230,8 @@ function toggleLineBreak() {
     lineBreakMode = lineBreakMode === 'On' ? 'Off' : 'On';
     const btn = document.getElementById('linebreak-toggle-btn');
     if (btn) btn.innerText = `Line Break: ${lineBreakMode}`;
-    reset();
     setupPoem(poemData, splitMode);
+    applyAllEffects();
 }
 
 //TODO - DIMENSIONS/MANIPULATIONS
