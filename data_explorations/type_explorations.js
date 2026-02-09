@@ -119,7 +119,7 @@ function reset() {
     });
 }
 
-// TODO - BUTTONS FOR THE DIFFERENT VARIATIONS
+//TODO - BUTTONS FOR THE DIFFERENT VARIATIONS
 const variations = [
     { type: 'header', label: 'CONTROLPANEL' },
     { id: 'reset-btn', label: 'Reset', action: () => {
@@ -131,14 +131,12 @@ const variations = [
     { id: 'split-toggle-btn', label: 'Mode: Letter', action: toggleSplitMode },
     // remove all the linebreaks
     
-    // rules - these will not show any dimension
     { type: 'header', label: 'Rules' },
     { id: 'Vowel_Consonant', label: 'Vowel/Consonant', action: () => setActiveRule('Vowel_Consonant', getVowCons) }, 
     { id: 'Word_Length', label: 'Word Length', action: () => setActiveRule('Word_Length', getLength) },
     { id: 'Ascenders', label: 'Ascenders', action: () => setActiveRule('Ascenders', getHeight) },
     { id: 'Alphabet_Order', label: 'Alphabet Order', action: () => setActiveRule('Alphabet_Order', getAlphaOrder) },
 
-     // dimensions
     { type: 'header', label: 'Dimensions' },
     { id: 'rotate', label: 'Rotation', action: () => triggerDimension('rotate', 45) },
     { id: 'spacing', label: 'Spacing', action: () => triggerDimension('spacing', 5) },
@@ -149,7 +147,7 @@ const variations = [
     { id: 'fall', label: 'Fall', action: () => wordsFall(words) },
 ];
 
-//TODO - HELPER FUNCTION MAPPING DIMENSION TO RULES
+//TODO - MAPPING HELPER FUNCTIONS
 function mapRuleToDimension(words, ruleFn, dimensionFn, config) {
     const groups = ruleFn(words);
     Object.keys(config).forEach(groupKey => {
@@ -208,8 +206,9 @@ function toggleSplitMode() {
     reset(); // Clear any active effects
     setupPoem(poemData, splitMode); // Re-process with new mode
 }
+// add line break toggle
 
-//TODO - DIMENSIONS/MANIPULATION TYPE 
+//TODO - DIMENSIONS/MANIPULATIONS
 function scalingDimension(words, styleApplier, value) {
     words.forEach(word => styleApplier(word, value));
 }
@@ -239,7 +238,6 @@ function changeFontWeight(words, weight) {
 }
 
 function wordsFall(words) {
-    // Clear any existing fall timeouts
     fallTimeouts.forEach(clearTimeout);
     fallTimeouts = [];
     
@@ -249,7 +247,7 @@ function wordsFall(words) {
     });
 }
 
-//TODO - HELPER LOGIC FUNCTIONS
+//TODO - LOGIC FUNCTIONS
 function getVowCons(words) {
     const groups = { vowels: [], consonants: [] };
     const vowels = 'aeiouAEIOU';
@@ -281,7 +279,6 @@ function getLength(words) {
     return groups;
 }
 
-// separating word/letters by their height
 function getHeight(words) {
     const groups = { high: [], low: [] };
     const ascenderRegex = /[bdfhkltA-Z]/;
