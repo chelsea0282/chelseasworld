@@ -1,6 +1,7 @@
 let words = [];
 let timeInterval;
 let splitMode = 'letter'; // 'word' or 'letter'
+let lineBreakMode = "On"; // "On" or "Off"
 let poemData; // Store the fetched data for re-processing
 let fallTimeouts = []; // Store timeout IDs for falling animation
 let activeDimensions = {};
@@ -24,7 +25,8 @@ function setupPoem(data, mode) {
     document.getElementById('type-author').innerText = lines[1];
 
     const contentDiv = document.getElementById('type-content');
-    const content = lines.slice(2).join('\n'); //preserve line breaks
+    const separator = lineBreakMode === 'On' ? '\n' : ' ';
+    const content = lines.slice(2).join(separator); //preserve line breaks
     
     // Clear and build spans
     contentDiv.innerHTML = ''; 
@@ -129,7 +131,7 @@ const variations = [
         activeDimensions = {};
     }},
     { id: 'split-toggle-btn', label: 'Mode: Letter', action: toggleSplitMode },
-    // remove all the linebreaks
+    { id: 'linebreak-toggle-btn', label: 'Line Break: On', action: toggleLineBreak },
     
     { type: 'header', label: 'Rules' },
     { id: 'Vowel_Consonant', label: 'Vowel/Consonant', action: () => setActiveRule('Vowel_Consonant', getVowCons) }, 
@@ -207,6 +209,14 @@ function toggleSplitMode() {
     setupPoem(poemData, splitMode); // Re-process with new mode
 }
 // add line break toggle
+
+function toggleLineBreak() {
+    lineBreakMode = lineBreakMode === 'On' ? 'Off' : 'On';
+    const btn = document.getElementById('linebreak-toggle-btn');
+    if (btn) btn.innerText = `Line Break: ${lineBreakMode}`;
+    reset();
+    setupPoem(poemData, splitMode);
+}
 
 //TODO - DIMENSIONS/MANIPULATIONS
 function scalingDimension(words, styleApplier, value) {
