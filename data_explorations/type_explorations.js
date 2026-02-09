@@ -130,8 +130,15 @@ const variations = [
     }},
     { id: 'split-toggle-btn', label: 'Mode: Letter', action: toggleSplitMode },
     // remove all the linebreaks
+    
+    // rules - these will not show any dimension
+    { type: 'header', label: 'Rules' },
+    { id: 'Vowel_Consonant', label: 'Vowel/Consonant', action: () => setActiveRule('Vowel_Consonant', getVowCons) }, 
+    { id: 'Word_Length', label: 'Word Length', action: () => setActiveRule('Word_Length', getLength) },
+    { id: 'Ascenders', label: 'Ascenders', action: () => setActiveRule('Ascenders', getHeight) },
+    { id: 'Alphabet_Order', label: 'Alphabet Order', action: () => setActiveRule('Alphabet_Order', getAlphaOrder) },
 
-    // dimensions
+     // dimensions
     { type: 'header', label: 'Dimensions' },
     { id: 'rotate', label: 'Rotation', action: () => triggerDimension('rotate', 45) },
     { id: 'spacing', label: 'Spacing', action: () => triggerDimension('spacing', 5) },
@@ -140,28 +147,7 @@ const variations = [
     { id: 'elevate', label: 'Elevate', action: () => triggerDimension('elevate', 5) },
     { id: 'fontweight', label: 'Font Weight', action: () => triggerDimension('fontweight', 700) },
     { id: 'fall', label: 'Fall', action: () => wordsFall(words) },
-    
-    // rules - these will not show any dimension
-    { type: 'header', label: 'Rules' },
-    { id: 'Vowel_Consonant', label: 'Vowel/Consonant', action: () => setActiveRule('Vowel_Consonant', getVowCons) }, 
-    { id: 'Word_Length', label: 'Word Length', action: () => setActiveRule('Word_Length', getLength) },
-    { id: 'Ascenders', label: 'Ascenders', action: () => setActiveRule('Ascenders', getHeight) },
-    { id: 'Alphabet_Order', label: 'Alphabet Order', action: () => setActiveRule('Alphabet_Order', getAlphaOrder) },
 ];
-
-//TODO - LETTER/WORD TOGGLE
-function toggleSplitMode() {
-    splitMode = splitMode === 'word' ? 'letter' : 'word';
-    const btn = document.getElementById('split-toggle-btn');
-    if (btn) btn.innerText = `Mode: ${splitMode === 'word' ? 'Word' : 'Letter'}`;
-    reset(); // Clear any active effects
-    setupPoem(poemData, splitMode); // Re-process with new mode
-}
-
-//TODO - HELPER FUNCTION ADDING SCALING TO DIMENSIONS
-function scalingDimension(words, styleApplier, value) {
-    words.forEach(word => styleApplier(word, value));
-}
 
 //TODO - HELPER FUNCTION MAPPING DIMENSION TO RULES
 function mapRuleToDimension(words, ruleFn, dimensionFn, config) {
@@ -173,7 +159,61 @@ function mapRuleToDimension(words, ruleFn, dimensionFn, config) {
     });
 }
 
+function setActiveRule(name, fn, defaultAction) {
+    reset();
+    activeRule = name;
+    activeRuleFn = fn;
+    console.log(`Active Rule set to: ${name}`);
+    if (Object.keys(activeDimensions).length > 0) {
+        applyAllEffects();
+    } else {
+        reset();
+        if (defaultAction) defaultAction();
+    }
+}
+
+function triggerDimension(dimName, defaultValue) {
+    const val = parseFloat(defaultValue);
+
+    if (activeDimensions[dimName] !== undefined) {
+        delete activeDimensions[dimName];
+    } else {
+        activeDimensions[dimName] = val;
+    }
+    applyAllEffects();
+}
+
+function applyAllEffects() {
+    reset();
+    Object.keys(activeDimensions).forEach(dimName => {
+        const val = activeDimensions[dimName];
+        if (activeRule && activeRuleFn) {
+            const config = dimensionSettings[dimName] ? dimensionSettings[dimName][activeRule] : null;
+            if (config) {
+                mapRuleToDimension(words, activeRuleFn, dimensionFunctions[dimName], config);
+            } else {
+                dimensionFunctionsdimName;
+            }
+        } else {
+            dimensionFunctionsdimName;
+        }
+    });
+}
+
+//TODO - TOGGLE
+function toggleSplitMode() {
+    splitMode = splitMode === 'word' ? 'letter' : 'word';
+    const btn = document.getElementById('split-toggle-btn');
+    if (btn) btn.innerText = `Mode: ${splitMode === 'word' ? 'Word' : 'Letter'}`;
+    reset(); // Clear any active effects
+    setupPoem(poemData, splitMode); // Re-process with new mode
+}
+
 //TODO - DIMENSIONS/MANIPULATION TYPE 
+function scalingDimension(words, styleApplier, value) {
+    words.forEach(word => styleApplier(word, value));
+}
+
 function rotate(words, degrees) {
     scalingDimension(words, (w, v) => w.style.transform = `rotate(${v}deg)`, degrees);
 }
@@ -266,7 +306,7 @@ function getAlphaOrder(words) {
     return groups;
 }
 
-// --- STATEFUL LOGIC ---
+// TODO - STATEFUL SETTINGS
 const dimensionFunctions = {
     'rotate': rotate,
     'spacing': alterSpacing,
@@ -315,46 +355,6 @@ const dimensionSettings = {
     }
 };
 
-function setActiveRule(name, fn, defaultAction) {
-    reset();
-    activeRule = name;
-    activeRuleFn = fn;
-    console.log(`Active Rule set to: ${name}`);
-    if (Object.keys(activeDimensions).length > 0) {
-        applyAllEffects();
-    } else {
-        reset();
-        if (defaultAction) defaultAction();
-    }
-}
-
-function triggerDimension(dimName, defaultValue) {
-    const val = parseFloat(defaultValue);
-
-    if (activeDimensions[dimName] !== undefined) {
-        delete activeDimensions[dimName];
-    } else {
-        activeDimensions[dimName] = val;
-    }
-    applyAllEffects();
-}
-
-function applyAllEffects() {
-    reset();
-    Object.keys(activeDimensions).forEach(dimName => {
-        const val = activeDimensions[dimName];
-        if (activeRule && activeRuleFn) {
-            const config = dimensionSettings[dimName] ? dimensionSettings[dimName][activeRule] : null;
-            if (config) {
-                mapRuleToDimension(words, activeRuleFn, dimensionFunctions[dimName], config);
-            } else {
-                dimensionFunctionsdimName;
-            }
-        } else {
-            dimensionFunctionsdimName;
-        }
-    });
-}
 
 // function processPoemSemantics(wordElements) {
 //     // 1. Safety Check: Ensure libraries are loaded
