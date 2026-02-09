@@ -3,6 +3,7 @@ let timeInterval;
 let splitMode = 'letter'; // 'word' or 'letter'
 let poemData; // Store the fetched data for re-processing
 let fallTimeouts = []; // Store timeout IDs for falling animation
+let activeDimensions = {};
 
 //TODO - POEM FETCH
 fetch('type.txt')
@@ -67,22 +68,28 @@ function setupControls() {
             header.style.marginTop = '15px';
             header.style.marginBottom = '5px';
             controlsDiv.appendChild(header);
-        } else if (v.type === 'range') {
+        } else if (v.type === 'select') {
             const label = document.createElement('label');
             label.innerText = v.label;
             label.htmlFor = v.id;
             label.style.display = 'block';
             
-            const input = document.createElement('input');
-            input.type = 'range';
-            input.id = v.id;
-            input.min = v.min;
-            input.max = v.max;
-            input.value = v.value;
-            input.addEventListener('input', v.action);
+            const select = document.createElement('select');
+            select.id = v.id;
+            select.style.width = '100%';
+            select.style.marginBottom = '10px';
+            
+            v.options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.value;
+                option.innerText = opt.label;
+                select.appendChild(option);
+            });
+            
+            select.addEventListener('change', v.action);
             
             controlsDiv.appendChild(label);
-            controlsDiv.appendChild(input);
+            controlsDiv.appendChild(select);
         } else {
             const btn = document.createElement('button');
             if (v.id) btn.id = v.id;
@@ -110,50 +117,36 @@ function reset() {
         // Ensure transform is reset (overrides animation 'forwards')
         word.style.transform = 'none';
     });
-
-    // Reset sliders to default values
-    const defaults = {
-        'spacing-slider': 0,
-        'fontsize-slider': 18,
-        'blur-slider': 0,
-        'fontweight-slider': 400,
-        'rotate-slider': 0,
-        'elevate-slider': 0
-    };
-    Object.keys(defaults).forEach(id => {
-        const slider = document.getElementById(id);
-        if (slider) slider.value = defaults[id];
-    });
 }
 
 // TODO - BUTTONS FOR THE DIFFERENT VARIATIONS
 const variations = [
     { type: 'header', label: 'CONTROLPANEL' },
-    { id: 'reset-btn', label: 'Reset', action: reset },
+    { id: 'reset-btn', label: 'Reset', action: () => {
+        reset();
+        activeRule = null;
+        activeRuleFn = null;
+        activeDimensions = {};
+    }},
     { id: 'split-toggle-btn', label: 'Mode: Letter', action: toggleSplitMode },
     // remove all the linebreaks
 
     // dimensions
     { type: 'header', label: 'Dimensions' },
     { id: 'rotate', label: 'Rotation', action: () => triggerDimension('rotate', 45) },
-    { type: 'range', id: 'rotate-slider', label: '', min: 0, max: 360, value: 0, action: (e) => triggerDimension('rotate', e.target.value) },
     { id: 'spacing', label: 'Spacing', action: () => triggerDimension('spacing', 5) },
-    { type: 'range', id: 'spacing-slider', label: '', min: 0, max: 50, value: 0, action: (e) => triggerDimension('spacing', e.target.value) },
     { id: 'fontsize', label: 'Font Size', action: () => triggerDimension('fontsize', 50) },
-    { type: 'range', id: 'fontsize-slider', label: '', min: 10, max: 100, value: 18, action: (e) => triggerDimension('fontsize', e.target.value) },
     { id: 'blur', label: 'Blur', action: () => triggerDimension('blur', 5) },
-    { type: 'range', id: 'blur-slider', label: '', min: 0, max: 10, step: 0.1, value: 0, action: (e) => triggerDimension('blur', e.target.value) },
     { id: 'elevate', label: 'Elevate', action: () => triggerDimension('elevate', 5) },
-    { type: 'range', id: 'elevate-slider', label: '', min: -50, max: 50, value: 0, action: (e) => triggerDimension('elevate', e.target.value) },
     { id: 'fontweight', label: 'Font Weight', action: () => triggerDimension('fontweight', 700) },
-    { type: 'range', id: 'fontweight-slider', label: '', min: 100, max: 900, step: 100, value: 400, action: (e) => triggerDimension('fontweight', e.target.value) },
     { id: 'fall', label: 'Fall', action: () => wordsFall(words) },
     
     // rules - these will not show any dimension
     { type: 'header', label: 'Rules' },
-    { id: 'Vowel_Consonant', label: 'Vowel/Consonant', action: () => setActiveRule('Vowel_Consonant', getVowCons, () => mapRuleToDimension(words, getVowCons)) }, 
-    { id: 'Word_Length', label: 'Word Length', action: () => setActiveRule('Word_Length', getLength, () => mapRuleToDimension(words, getLength)) },
-    { id: 'Ascenders', label: 'Ascenders', action: () => setActiveRule('Ascenders', getHeight, () => mapRuleToDimension(words, getHeight)) },
+    { id: 'Vowel_Consonant', label: 'Vowel/Consonant', action: () => setActiveRule('Vowel_Consonant', getVowCons) }, 
+    { id: 'Word_Length', label: 'Word Length', action: () => setActiveRule('Word_Length', getLength) },
+    { id: 'Ascenders', label: 'Ascenders', action: () => setActiveRule('Ascenders', getHeight) },
+    { id: 'Alphabet_Order', label: 'Alphabet Order', action: () => setActiveRule('Alphabet_Order', getAlphaOrder) },
 ];
 
 //TODO - LETTER/WORD TOGGLE
@@ -166,12 +159,8 @@ function toggleSplitMode() {
 }
 
 //TODO - HELPER FUNCTION ADDING SCALING TO DIMENSIONS
-function scalingDimension(words, styleApplier, value, sliderId) {
+function scalingDimension(words, styleApplier, value) {
     words.forEach(word => styleApplier(word, value));
-    const slider = document.getElementById(sliderId);
-    if (slider) {
-        slider.value = value;
-    }
 }
 
 //TODO - HELPER FUNCTION MAPPING DIMENSION TO RULES
@@ -186,27 +175,27 @@ function mapRuleToDimension(words, ruleFn, dimensionFn, config) {
 
 //TODO - DIMENSIONS/MANIPULATION TYPE 
 function rotate(words, degrees) {
-    scalingDimension(words, (w, v) => w.style.transform = `rotate(${v}deg)`, degrees, 'rotate-slider');
+    scalingDimension(words, (w, v) => w.style.transform = `rotate(${v}deg)`, degrees);
 }
 
 function alterSpacing(words, pixels) {
-    scalingDimension(words, (w, v) => w.style.marginRight = `${v}px`, pixels, 'spacing-slider');
+    scalingDimension(words, (w, v) => w.style.marginRight = `${v}px`, pixels);
 }
 
 function changeFontSize(words, size) {
-    scalingDimension(words, (w, v) => w.style.fontSize = `${v}px`, size, 'fontsize-slider');
+    scalingDimension(words, (w, v) => w.style.fontSize = `${v}px`, size);
 }
 
 function blurWords(words, blurAmount) { 
-    scalingDimension(words, (w, v) => w.style.filter = `blur(${v}px)`, blurAmount, 'blur-slider');
+    scalingDimension(words, (w, v) => w.style.filter = `blur(${v}px)`, blurAmount);
 }
 
 function elevate(words, pixels) {
-    scalingDimension(words, (w, v) => w.style.transform = `translateY(${v}px)`, pixels, 'elevate-slider');
+    scalingDimension(words, (w, v) => w.style.transform = `translateY(${v}px)`, pixels);
 }
 
 function changeFontWeight(words, weight) {
-    scalingDimension(words, (w, v) => w.style.fontWeight = v, weight, 'fontweight-slider');
+    scalingDimension(words, (w, v) => w.style.fontWeight = v, weight);
 }
 
 function wordsFall(words) {
@@ -263,6 +252,20 @@ function getHeight(words) {
     return groups;
 }
 
+function getAlphaOrder(words) {
+    const groups = { firstHalf: [], secondHalf: [] };
+    const firstHalfRegex = /[a-mA-M]/;
+    words.forEach(word => {
+        let charToCheck = splitMode === 'letter' ? word.innerText : word.innerText.charAt(0);
+        if (firstHalfRegex.test(charToCheck)) {
+            groups.firstHalf.push(word);
+        } else {
+            groups.secondHalf.push(word);
+        }
+    });
+    return groups;
+}
+
 // --- STATEFUL LOGIC ---
 const dimensionFunctions = {
     'rotate': rotate,
@@ -277,80 +280,80 @@ const dimensionSettings = {
     'rotate': {
         'Vowel_Consonant': { vowels: 15, consonants: -15 },
         'Word_Length': { short: -10, medium: 0, long: 10 },
-        'Ascenders': { high: 15, low: -5 }
+        'Ascenders': { high: 15, low: -5 },
+        'Alphabet_Order': { firstHalf: -15, secondHalf: 15 }
     },
     'spacing': {
         'Vowel_Consonant': { vowels: 20, consonants: 5 },
         'Word_Length': { short: 30, medium: 10, long: 0 },
-        'Ascenders': { high: 20, low: 5 }
+        'Ascenders': { high: 20, low: 5 },
+        'Alphabet_Order': { firstHalf: 5, secondHalf: 20 }
     },
     'fontsize': {
         'Vowel_Consonant': { vowels: 12, consonants: 24 },
         'Word_Length': { short: 30, medium: 18, long: 12 },
-        'Ascenders': { high: 24, low: 14 }
+        'Ascenders': { high: 24, low: 14 },
+        'Alphabet_Order': { firstHalf: 14, secondHalf: 24 }
     },
     'blur': {
         'Vowel_Consonant': { vowels: 2, consonants: 0 },
         'Word_Length': { short: 0, medium: 2, long: 4 },
-        'Ascenders': { high: 0, low: 3 }
+        'Ascenders': { high: 0, low: 3 },
+        'Alphabet_Order': { firstHalf: 0, secondHalf: 2 }
     },
     'elevate': {
         'Vowel_Consonant': { vowels: -10, consonants: 10 },
         'Word_Length': { short: -10, medium: 0, long: 10 },
-        'Ascenders': { high: -10, low: 5 }
+        'Ascenders': { high: -10, low: 5 },
+        'Alphabet_Order': { firstHalf: -10, secondHalf: 10 }
     },
     'fontweight': {
         'Vowel_Consonant': { vowels: 700, consonants: 100 },
         'Word_Length': { short: 900, medium: 400, long: 100 },
-        'Ascenders': { high: 700, low: 100 }
+        'Ascenders': { high: 700, low: 100 },
+        'Alphabet_Order': { firstHalf: 700, secondHalf: 400 }
     }
 };
 
 function setActiveRule(name, fn, defaultAction) {
-    // 1. Capture current dimension states before reset
-    const currentDimensions = {};
-    const dimMap = {
-        'rotate': { id: 'rotate-slider', def: 0 },
-        'spacing': { id: 'spacing-slider', def: 0 },
-        'fontsize': { id: 'fontsize-slider', def: 18 },
-        'blur': { id: 'blur-slider', def: 0 },
-        'elevate': { id: 'elevate-slider', def: 0 },
-        'fontweight': { id: 'fontweight-slider', def: 400 }
-    };
-
-    Object.keys(dimMap).forEach(dim => {
-        const slider = document.getElementById(dimMap[dim].id);
-        if (slider) {
-            const val = parseFloat(slider.value);
-            if (val !== dimMap[dim].def) {
-                currentDimensions[dim] = val;
-            }
-        }
-    });
-
     reset();
     activeRule = name;
     activeRuleFn = fn;
     console.log(`Active Rule set to: ${name}`);
-    if (defaultAction) defaultAction();
-
-    // 2. Re-apply previously active dimensions using the new rule context
-    Object.keys(currentDimensions).forEach(dim => {
-        triggerDimension(dim, currentDimensions[dim]);
-    });
+    if (Object.keys(activeDimensions).length > 0) {
+        applyAllEffects();
+    } else {
+        reset();
+        if (defaultAction) defaultAction();
+    }
 }
 
 function triggerDimension(dimName, defaultValue) {
-    if (activeRule && activeRuleFn) {
-        const config = dimensionSettings[dimName] ? dimensionSettings[dimName][activeRule] : null;
-        if (config) {
-            mapRuleToDimension(words, activeRuleFn, dimensionFunctions[dimName], config);
+    const val = parseFloat(defaultValue);
+
+    if (activeDimensions[dimName] !== undefined) {
+        delete activeDimensions[dimName];
+    } else {
+        activeDimensions[dimName] = val;
+    }
+    applyAllEffects();
+}
+
+function applyAllEffects() {
+    reset();
+    Object.keys(activeDimensions).forEach(dimName => {
+        const val = activeDimensions[dimName];
+        if (activeRule && activeRuleFn) {
+            const config = dimensionSettings[dimName] ? dimensionSettings[dimName][activeRule] : null;
+            if (config) {
+                mapRuleToDimension(words, activeRuleFn, dimensionFunctions[dimName], config);
+            } else {
+                dimensionFunctionsdimName;
+            }
         } else {
             dimensionFunctionsdimName;
         }
-    } else {
-        dimensionFunctionsdimName;
-    }
+    });
 }
 
 // function processPoemSemantics(wordElements) {
