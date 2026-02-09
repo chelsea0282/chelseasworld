@@ -123,12 +123,17 @@ function reset() {
 
 //TODO - BUTTONS FOR THE DIFFERENT VARIATIONS
 const variations = [
-    { type: 'header', label: 'CONTROLPANEL' },
+    { type: 'header', label: 'Settings' },
     { id: 'reset-btn', label: 'Reset', action: () => {
         reset();
         activeRule = null;
         activeRuleFn = null;
         activeDimensions = {};
+        // Reset button styles
+        ['rotate', 'spacing', 'fontsize', 'blur', 'elevate', 'fontweight', 'Vowel_Consonant', 'Word_Length', 'Ascenders', 'Alphabet_Order'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.style.backgroundColor = '';
+        });
     }},
     { id: 'split-toggle-btn', label: 'Mode: Letter', action: toggleSplitMode },
     { id: 'linebreak-toggle-btn', label: 'Line Break: On', action: toggleLineBreak },
@@ -160,9 +165,17 @@ function mapRuleToDimension(words, ruleFn, dimensionFn, config) {
 }
 
 function setActiveRule(name, fn, defaultAction) {
+    // Reset rule button styles
+    ['Vowel_Consonant', 'Word_Length', 'Ascenders', 'Alphabet_Order'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.style.backgroundColor = '';
+    });
+
     reset();
     activeRule = name;
     activeRuleFn = fn;
+    const btn = document.getElementById(name);
+    if (btn) btn.style.backgroundColor = '#a9a9a9';
     console.log(`Active Rule set to: ${name}`);
     if (Object.keys(activeDimensions).length > 0) {
         applyAllEffects();
@@ -174,11 +187,14 @@ function setActiveRule(name, fn, defaultAction) {
 
 function triggerDimension(dimName, defaultValue) {
     const val = parseFloat(defaultValue);
+    const btn = document.getElementById(dimName);
 
     if (activeDimensions[dimName] !== undefined) {
         delete activeDimensions[dimName];
+        if (btn) btn.style.backgroundColor = '';
     } else {
         activeDimensions[dimName] = val;
+        if (btn) btn.style.backgroundColor = '#a9a9a9';
     }
     applyAllEffects();
 }
@@ -192,10 +208,10 @@ function applyAllEffects() {
             if (config) {
                 mapRuleToDimension(words, activeRuleFn, dimensionFunctions[dimName], config);
             } else {
-                dimensionFunctionsdimName;
+                dimensionFunctions[dimName](words, val);
             }
         } else {
-            dimensionFunctionsdimName;
+            dimensionFunctions[dimName](words, val);
         }
     });
 }
