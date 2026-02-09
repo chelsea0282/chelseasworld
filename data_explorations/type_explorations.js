@@ -266,8 +266,30 @@ function changeFontWeight(words, weight) {
 function wordsFall(words) {
     fallTimeouts.forEach(clearTimeout);
     fallTimeouts = [];
+
+    // Create bins to track the height of the pile across the screen width
+    const binSize = 40; // Width of each "stacking column"
+    const bins = new Array(Math.ceil(window.innerWidth / binSize)).fill(0);
     
     words.forEach((word, index) => {
+        const rect = word.getBoundingClientRect();
+        
+        // Determine which bin this word belongs to based on its center X
+        const centerX = rect.left + rect.width / 2;
+        const binIndex = Math.floor(centerX / binSize);
+        const currentPileHeight = bins[binIndex] || 0;
+
+        // Calculate distance to fall, accounting for the pile height
+        const distance = Math.max(0, (window.innerHeight - rect.bottom) - currentPileHeight + (Math.random() * 20 - 10));
+        
+        // Update pile height for this bin (using a fraction of height for overlap)
+        if (binIndex >= 0 && binIndex < bins.length) {
+            bins[binIndex] += rect.height * 0.5; 
+        }
+
+        const rotation = Math.random() * 60 - 30; // Random rotation between -30 and 30 degrees
+        word.style.setProperty('--fall-distance', `${distance}px`);
+        word.style.setProperty('--fall-rotate', `${rotation}deg`);
         const timeoutId = setTimeout(() => word.classList.add('falling'), index * 50);
         fallTimeouts.push(timeoutId);
     });
