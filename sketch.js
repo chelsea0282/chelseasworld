@@ -60,6 +60,16 @@ const projectData = {
         `,
     },
 
+    'games': {
+        title: "Games",
+        description: `
+            <p>Things you can actually play.</p>
+            <ul>
+                <p> <a href="escape/index.html" target="_blank">(ESC)APE</a> — a text game about trying to leave the office by 5pm. Made with Tiffany Quon. </p>
+            </ul>
+        `,
+    },
+
     // Windows (Corresponds to data-project-id)
     // example data format
     // '3': {
