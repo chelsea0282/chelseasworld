@@ -60,15 +60,8 @@ const projectData = {
         `,
     },
 
-    'games': {
-        title: "Games",
-        description: `
-            <p>Things you can actually play.</p>
-            <ul>
-                <p> <a href="escape/index.html" target="_blank">(ESC)APE</a> — a text game about trying to leave the office by 5pm. Made with Tiffany Quon. </p>
-            </ul>
-        `,
-    },
+    // NOTE: the (ESC)APE icon has no entry here on purpose — it uses
+    // data-launch-url="/escape/" and navigates straight to the game.
 
     // Windows (Corresponds to data-project-id)
     // example data format
@@ -285,10 +278,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            // Folders with a data-launch-url go straight there instead of
+            // opening a modal. Add that attribute to any icon you want to be
+            // a one-click launcher.
+            const launchUrl = item.getAttribute('data-launch-url');
+            if (launchUrl) {
+                window.location.href = launchUrl;
+                return;
+            }
+
             // Get the ID from the correct attribute
             const id = item.getAttribute('data-folder-id') || item.getAttribute('data-project-id');
-            
-            const content = getProjectContent(id); 
+
+            const content = getProjectContent(id);
             openModal(content.title, content.content);
 
             // Pause the bouncing of the item that was clicked on
