@@ -1,5 +1,5 @@
-// PROJECT CONTENT DATABASE
-// TOOD: move this into a different file later on.
+// Homepage behavior. Project records live in content/*.js and are assembled
+// by content/library.js so the presentation layer can change independently.
 /* Reflections:
 - I love that this class made me build a website which has been on my TODO list for years.
 - Love that it was a great oppertunity to customize and build from scratch which is what I wanted all along.
@@ -18,100 +18,50 @@
 - maybe have a "launch app" button on the folder that opens the floating window?
 - I want to make this working on mobile as well
 */
-const projectData = {
-    
-    // Folders (Corresponds to data-folder-id)
-    'creative-comp-projects': {
-        title: "CC Projects",
-        description: `
-            <p>My CC projects!.</p>
-            <ul>
-                <p><a href="https://editor.p5js.org/hanc190/full/TC91xLOUY" target="_blank">A1 - Memory Scene</a> </p>
-                <p><a href="https://editor.p5js.org/hanc190/full/p0FiCMP_p" target="_blank">A2 - Face Generator</a> </p>
-                <p><a href="https://editor.p5js.org/hanc190/full/FNWqBbvMM" target="_blank">A3 - A neurodivergent clock</a> </p>
-                <p><a href="https://editor.p5js.org/hanc190/full/C0CcPKFsF" target="_blank">A4 - Optical Illusion</a> </p>
-                <p><a href="https://editor.p5js.org/hanc190/full/_VTLRhRZJ" target="_blank">A5 - An exquisite Corpse</a> </p>
-                <p><a href="https://editor.p5js.org/hanc190/full/f4CO8CgRi" target="_blank">A6 - Data Garden</a> </p>
-                <p><a href="https://editor.p5js.org/hanc190/full/fZm5F-KNc" target="_blank">A7 - Day in my Life</a> </p>
-                <p><a href="https://chelseas.world" target="_blank">A8 - Chelsea's World</a>
-            </ul>
-        `,
-    },
-    'google-projects': {
-        title: "Googogle projects",
-        description: `
-            <p>I'm also a PM working on AI@Google.</p>
-            <ul>
-                <p><a href="https://infinitewonderland.withgoogle.com/" target="_blank">Infinite Wonderland</a> </p>
-                <p><a href="https://labs.google/about" target="_blank">PMed Labs.Google</a> </p>
-                <p><a href="https://www.theverge.com/2022/11/17/23463133/google-search-ar-sneakers-beauty-inclusive-features" target="_blank">spinny shoes on Google Shopping</a> </p>
-                <p><a href="https://labs.google/fx/" target="_blank">Generative AI tools from Google (free)</a> </p>
-            </ul>
-        `,
-    },
+function renderLibrary() {
+    const library = window.CHELSEA_LIBRARY;
+    const content = library.content;
+    const designSystem = document.getElementById('design-system');
+    const folders = document.getElementById('desktop-icons');
+    const windows = document.getElementById('project-windows');
 
-    'data-explorations': {
-        title: "Data Explorations",
-        description: `
-            <p>My lastest projects</p>
-            <ul>
-                <p> <a href="data_explorations/type_exploration.html" target="_blank">Type Assignment</a> </p>
-            </ul>
-        `,
-    },
+    document.documentElement.dataset.designSystem = library.designSystem;
+    if (designSystem && library.designSystems[library.designSystem]) {
+        designSystem.href = library.designSystems[library.designSystem];
+    }
 
-    // NOTE: the (ESC)APE icon has no entry here on purpose — it uses
-    // data-launch-url="/escape/" and navigates straight to the game.
+    library.navigation.forEach(id => {
+        const project = content[id];
+        const folder = document.createElement('div');
+        folder.className = 'project-folder static-item';
+        folder.dataset.folderId = id;
+        if (project.launchUrl) folder.dataset.launchUrl = project.launchUrl;
+        folder.innerHTML = `<img src="${project.icon}" alt=""><p>${project.title}</p>`;
+        folders.appendChild(folder);
+    });
 
-    // Windows (Corresponds to data-project-id)
-    // example data format
-    // '3': {
-    //     title: "Project 3: Complex 3D Environment",
-    //     description: `
-    //         <p>A Three.js experience demonstrating my skills in 3D rendering and shading languages. This required optimization for web performance.</p>
-    //         <img src="assets/images/project1-full.jpg" alt="Full Project 1 Screenshot" style="max-width: 100%; border: 2px solid var(--cyber-pink); margin-bottom: 15px;">
-    //         <p>Click below to jump into the scene!</p>
-    //         <a href="https://chelseas.world/3d-scene" target="_blank">Enter The Matrix</a>
-    //     `,
-    // },
+    library.featured.forEach(id => {
+        const project = content[id];
+        const windowElement = document.createElement('div');
+        windowElement.className = 'project-window float-item';
+        windowElement.dataset.projectId = id;
+        if (project.placement) {
+            windowElement.style.left = project.placement.left;
+            windowElement.style.top = project.placement.top;
+        }
+        windowElement.innerHTML = `<div class="window-header">${project.title}</div><div class="window-content"><p>${project.preview}</p></div>`;
+        windows.appendChild(windowElement);
+    });
+}
 
-    '1': {
-        title: "A Project",
-        description: `
-            <p>hehe it works.</p>
-        `,
-    },
-    '2': {
-        title: "Data Garden",
-        description: `
-            <p>This garden represents my exploration of data visualization through generative art. There are factors like time or how often I see them that affects the design like leaf density, and bloom type that varies</p>
-            <iframe 
-                width="100%" 
-                height="600" 
-                src="/p5-sketches/garden-viz.html" 
-                frameborder="0" 
-                style="border: 2px solid #FF00FF; background-color: rgb(104, 160, 72);"
-                allowfullscreen>
-            </iframe>
-            <p><strong>Try hovering over the plants!</strong> </p>
-        `,
-    },
-    '3': {
-        title: "Day in My Life",
-        description: `
-            <p>What it feels like to live a day in Chelsea's world</p>
-            <iframe 
-                width="100%" 
-                height="600" 
-                src="/p5-sketches/minigame.html" 
-                frameborder="0" 
-                allowfullscreen>
-            </iframe>
-            <p><strong>It's another exciting day!</strong> </p>
-        `,
-    },
-    
-};
+function renderProjectContent(project) {
+    const paragraphs = (project.documentation || []).map(text => `<p>${text}</p>`).join('');
+    const links = (project.links || []).map(link => `<li><a href="${link.url}" target="_blank" rel="noopener">${link.label}</a></li>`).join('');
+    const media = (project.media || []).map(item => item.type === 'iframe'
+        ? `<iframe width="100%" height="600" src="${item.url}" title="${item.title}" frameborder="0" allowfullscreen></iframe>`
+        : `<img src="${item.url}" alt="${item.title}">`).join('');
+    return `${paragraphs}${links ? `<ul>${links}</ul>` : ''}${media}`;
+}
 
 // --- DYNAMIC BORDER GLITCH (Runs on a fast interval) ---
 function dynamicGlitchBorder() {
@@ -137,6 +87,7 @@ setInterval(dynamicGlitchBorder, 50);
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    renderLibrary();
     // Select ONLY the floating project windows for movement
     const floatItems = document.querySelectorAll('.float-item'); 
     // Select ALL clickable items (floating windows, static folders, etc.)
@@ -166,10 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial random placement & velocity setup for floating items
     floatItems.forEach(item => {
         // Initial placement ensures items start within the viewport
-        const x = Math.random() * (window.innerWidth - item.offsetWidth - 300) + 50; 
-        const y = Math.random() * (window.innerHeight - item.offsetHeight - 100) + 50;
-        item.style.left = `${x}px`;
-        item.style.top = `${y}px`;
+        const x = item.style.left || `${Math.random() * (window.innerWidth - item.offsetWidth - 300) + 50}px`;
+        const y = item.style.top || `${Math.random() * (window.innerHeight - item.offsetHeight - 100) + 50}px`;
+        item.style.left = x;
+        item.style.top = y;
         item.velocity = { 
             x: (Math.random() - 0.5) * 0.5, 
             y: (Math.random() - 0.5) * 0.5 
@@ -252,13 +203,13 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.remove('hidden');
     }
 
-    // Function to get content from the global projectData object
+    // Function to get content from the shared library
     function getProjectContent(id) {
-        const content = projectData[id]; 
+        const content = window.CHELSEA_LIBRARY.content[id];
         if (content) {
             return {
                 title: content.title,
-                content: content.description 
+                content: renderProjectContent(content)
             };
         }
         return { 
