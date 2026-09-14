@@ -19,7 +19,11 @@
         <div id="project-windows" aria-label="Featured projects"></div>
         
         <div id="cd-rom-player" class="static-item">
-            <p>💿 Now Playing: One More Time</p>
+            <div class="player-titlebar">
+                <span>💿 Windows Media Player</span>
+                <span class="player-controls" aria-hidden="true">_ □ ×</span>
+            </div>
+            <p>Now Playing: One More Time</p>
             <audio id="background-music" loop>
                 <source src="/Assets/Music/onemoretime.mp3" type="audio/mp3">
                 Your browser does not support the audio element.
@@ -27,12 +31,40 @@
             <button id="music-toggle">Play Music</button>
         </div>
 
+        <footer id="xp-taskbar" aria-label="Windows XP taskbar">
+            <button id="start-button" type="button">
+                <span class="start-logo" aria-hidden="true"></span>
+                <span>start</span>
+            </button>
+            <div class="taskbar-divider" aria-hidden="true"></div>
+            <div class="quick-launch" aria-label="Quick launch">
+                <span class="quick-launch-icon">▣</span>
+                <span class="quick-launch-icon">✉</span>
+                <span class="quick-launch-icon">◎</span>
+            </div>
+            <div class="taskbar-space"></div>
+            <div class="system-tray">
+                <span class="tray-icon">▴</span>
+                <span class="tray-icon">🔊</span>
+                <span id="taskbar-clock">12:00 PM</span>
+            </div>
+        </footer>
+
     </main>
     
     <div id="project-modal" class="hidden">
         <div class="modal-content">
-            <button id="close-modal-btn">X Close</button>
-            <h2 id="modal-title">Project Title Placeholder</h2>
+            <div class="modal-titlebar">
+                <div class="modal-title-wrap">
+                    <span class="window-icon" aria-hidden="true">▣</span>
+                    <h2 id="modal-title">Project Title Placeholder</h2>
+                </div>
+                <div class="window-controls">
+                    <button type="button" aria-label="Minimize">_</button>
+                    <button type="button" aria-label="Maximize">□</button>
+                    <button id="close-modal-btn" type="button" aria-label="Close">×</button>
+                </div>
+            </div>
             <div id="modal-body"></div>
         </div>
     </div>
@@ -43,6 +75,7 @@
     <script src="content/escape.js"></script>
     <script src="content/data-garden.js"></script>
     <script src="content/day-in-my-life.js"></script>
+    <script src="content/project-window.js"></script>
     <script src="content/library.js"></script>
     <script src="sketch.js"></script>
 </body>

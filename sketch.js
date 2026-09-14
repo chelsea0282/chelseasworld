@@ -49,7 +49,7 @@ function renderLibrary() {
             windowElement.style.left = project.placement.left;
             windowElement.style.top = project.placement.top;
         }
-        windowElement.innerHTML = `<div class="window-header">${project.title}</div><div class="window-content"><p>${project.preview}</p></div>`;
+        windowElement.innerHTML = `<div class="window-header"><span class="window-title"><span class="window-icon" aria-hidden="true">▣</span>${project.title}</span><span class="window-controls"><button type="button" class="window-control" aria-label="Minimize">_</button><button type="button" class="window-control" aria-label="Maximize">□</button><button type="button" class="window-control" aria-label="Close">×</button></span></div><div class="window-content"><p>${project.preview}</p></div>`;
         windows.appendChild(windowElement);
     });
 }
@@ -63,31 +63,25 @@ function renderProjectContent(project) {
     return `${paragraphs}${links ? `<ul>${links}</ul>` : ''}${media}`;
 }
 
-// --- DYNAMIC BORDER GLITCH (Runs on a fast interval) ---
+// --- HORIZONTAL GLITCH (XP blue-screen artifact, not a neon border) ---
 function dynamicGlitchBorder() {
     const floatItems = document.querySelectorAll('.float-item');
-    const colors = ["#FF00FF", "#00FFFF", "#000000", "#FFFFFF"]; // Pink, Cyan, Black, White
+    const colors = ['#0054e3', '#3c8df5', '#f7f7f7', '#ffcc00'];
 
     floatItems.forEach(item => {
-        // Generate random offsets for X and Y, making them slight and quick
-        const randomOffset = () => Math.floor(Math.random() * 8 - 4); // -4 to 3
-        const randomColor = () => colors[Math.floor(Math.random() * colors.length)];
-        
-        item.style.boxShadow = `
-            ${randomOffset()}px ${randomOffset()}px 0px 0px ${randomColor()}, 
-            ${randomOffset()}px ${randomOffset()}px 0px 0px ${randomColor()}, 
-            ${randomOffset()}px ${randomOffset()}px 0px 0px ${randomColor()},
-            0 0 10px rgba(0, 0, 0, 0.5)
-        `;
+        item.style.setProperty('--glitch-shift', `${Math.floor(Math.random() * 13) - 6}px`);
+        item.style.setProperty('--glitch-accent', colors[Math.floor(Math.random() * colors.length)]);
     });
 }
 
-// Run the glitch function every 50 milliseconds (fast flickering)
-setInterval(dynamicGlitchBorder, 50);
+// Keep the artifact occasional enough that the window chrome remains legible.
+setInterval(dynamicGlitchBorder, 140);
 
 
 document.addEventListener('DOMContentLoaded', () => {
     renderLibrary();
+    updateTaskbarClock();
+    setInterval(updateTaskbarClock, 30000);
     // Select ONLY the floating project windows for movement
     const floatItems = document.querySelectorAll('.float-item'); 
     // Select ALL clickable items (floating windows, static folders, etc.)
@@ -116,11 +110,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial random placement & velocity setup for floating items
     floatItems.forEach(item => {
-        // Initial placement ensures items start within the viewport
-        const x = item.style.left || `${Math.random() * (window.innerWidth - item.offsetWidth - 300) + 50}px`;
-        const y = item.style.top || `${Math.random() * (window.innerHeight - item.offsetHeight - 100) + 50}px`;
-        item.style.left = x;
-        item.style.top = y;
+        // Resolve responsive library placements once, then animate in pixels.
+        const taskbarHeight = document.getElementById('xp-taskbar')?.offsetHeight || 0;
+        const maxX = Math.max(0, window.innerWidth - item.offsetWidth);
+        const maxY = Math.max(0, window.innerHeight - taskbarHeight - item.offsetHeight);
+        const placement = item.getBoundingClientRect();
+        const randomX = Math.random() * Math.max(1, maxX - 100) + 50;
+        const randomY = Math.random() * Math.max(1, maxY - 50) + 25;
+        const x = Math.max(0, Math.min(Number.isFinite(placement.left) ? placement.left : randomX, maxX));
+        const y = Math.max(0, Math.min(Number.isFinite(placement.top) ? placement.top : randomY, maxY));
+        item.style.left = `${x}px`;
+        item.style.top = `${y}px`;
         item.velocity = { 
             x: (Math.random() - 0.5) * 0.5, 
             y: (Math.random() - 0.5) * 0.5 
@@ -146,9 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 newX = Math.max(0, Math.min(newX, window.innerWidth - width)); 
             }
 
-            if (newY < 0 || newY + height > window.innerHeight) {
+            const taskbarHeight = document.getElementById('xp-taskbar')?.offsetHeight || 0;
+            if (newY < 0 || newY + height > window.innerHeight - taskbarHeight) {
                 item.velocity.y *= -1; 
-                newY = Math.max(0, Math.min(newY, window.innerHeight - height)); 
+                newY = Math.max(0, Math.min(newY, window.innerHeight - taskbarHeight - height)); 
             }
 
             item.style.left = `${newX}px`;
@@ -257,5 +258,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Resume all movement
         floatItems.forEach(item => item.isDragging = false); 
     });
+
+    function updateTaskbarClock() {
+        const clock = document.getElementById('taskbar-clock');
+        if (clock) {
+            clock.textContent = new Intl.DateTimeFormat([], {
+                hour: 'numeric',
+                minute: '2-digit'
+            }).format(new Date());
+        }
+    }
     
 });
