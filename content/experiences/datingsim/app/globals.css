@@ -201,7 +201,7 @@ h1 small {
   overflow: auto;
   padding: 0.85rem 1.35rem;
   border: 9px solid transparent;
-  border-image: url("/assets/ui/textbox.png") 34 round;
+  border-image: url("/content/experiences/datingsim/out/assets/ui/textbox.png") 34 round;
   background: rgba(247, 241, 228, 0.94);
   color: var(--ink);
   cursor: default;
