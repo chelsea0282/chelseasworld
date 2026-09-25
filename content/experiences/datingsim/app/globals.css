@@ -1,0 +1,282 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Nanum+Myeongjo:wght@400;700&display=swap");
+
+:root {
+  --gold: #c9a227;
+  --gold-light: #e3c878;
+  --ink: #2a2118;
+  --parchment: #f7f1e4;
+  --rose: #d9b3b8;
+  --font-display: "Cormorant Garamond", "Nanum Myeongjo", Georgia, serif;
+  --font-body: "EB Garamond", "Nanum Myeongjo", Georgia, serif;
+  --font-korean: "Nanum Myeongjo", "Cormorant Garamond", serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: var(--font-body);
+}
+
+button {
+  font: inherit;
+}
+
+.title-screen {
+  isolation: isolate;
+  min-height: 100svh;
+  overflow: hidden;
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: #1d1713;
+}
+
+.title-art,
+.title-vignette {
+  position: absolute;
+  inset: 0;
+}
+
+.title-art {
+  object-fit: cover;
+  object-position: center;
+  z-index: -3;
+}
+
+.title-vignette {
+  background:
+    linear-gradient(180deg, rgba(29, 23, 19, 0.08), rgba(29, 23, 19, 0.62)),
+    radial-gradient(circle at 50% 42%, transparent 12%, rgba(20, 13, 10, 0.55) 100%);
+  z-index: -2;
+}
+
+.missing-asset {
+  position: absolute;
+  inset: 6vw;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--gold);
+  background: var(--parchment);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  z-index: -1;
+}
+
+.title-content {
+  display: grid;
+  justify-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  transform: translateY(-3vh);
+}
+
+.title-kicker {
+  margin: 0;
+  color: var(--gold-light);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+h1 {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  color: var(--parchment);
+  font-family: var(--font-korean);
+  font-size: clamp(2.1rem, 5vw, 5.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+  text-shadow: 0 2px 24px rgba(20, 13, 10, 0.8);
+}
+
+h1 small {
+  color: var(--gold-light);
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2vw, 1.65rem);
+  font-weight: 600;
+  letter-spacing: 0.17em;
+}
+
+.ornate-button {
+  position: relative;
+  min-width: 10rem;
+  padding: 0.8rem 2.4rem;
+  border: 1px solid var(--gold-light);
+  outline: 1px solid rgba(227, 200, 120, 0.55);
+  outline-offset: -5px;
+  background: rgba(42, 33, 24, 0.45);
+  color: var(--gold-light);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transition: background-color 400ms ease, color 400ms ease, box-shadow 400ms ease;
+}
+
+.ornate-button:hover,
+.ornate-button:focus-visible {
+  background: rgba(227, 200, 120, 0.16);
+  color: #fff5ce;
+  box-shadow: 0 0 24px rgba(227, 200, 120, 0.25);
+}
+
+.prologue-screen {
+  min-height: 100svh;
+  overflow: hidden;
+  position: relative;
+  display: grid;
+  place-items: end center;
+  background: var(--ink);
+  cursor: pointer;
+}
+
+.prologue-background,
+.prologue-shade {
+  position: absolute;
+  inset: 0;
+}
+
+.prologue-background {
+  object-fit: cover;
+  z-index: 0;
+}
+
+.prologue-shade {
+  background: linear-gradient(180deg, rgba(25, 18, 13, 0.04) 30%, rgba(25, 18, 13, 0.65));
+  z-index: 1;
+}
+
+.prologue-overlay {
+  position: absolute;
+  top: 22%;
+  left: 50%;
+  z-index: 2;
+  width: min(24vw, 382px);
+  height: auto;
+  transform: translateX(-50%);
+}
+
+.prologue-sprite {
+  position: absolute;
+  bottom: 0;
+  left: 8%;
+  z-index: 2;
+  width: auto;
+  height: 78vh;
+}
+
+.aurelian-sprite {
+  position: absolute;
+  right: 8%;
+  bottom: 0;
+  z-index: 2;
+  width: auto;
+  height: 78vh;
+  filter: drop-shadow(0 0 26px rgba(227, 200, 120, 0.25));
+}
+
+.narration-box {
+  position: relative;
+  z-index: 3;
+  width: min(78%, 1120px);
+  max-height: 34vh;
+  margin-bottom: 3vh;
+  overflow: auto;
+  padding: 0.85rem 1.35rem;
+  border: 9px solid transparent;
+  border-image: url("/assets/ui/textbox.png") 34 round;
+  background: rgba(247, 241, 228, 0.94);
+  color: var(--ink);
+  cursor: default;
+}
+
+.narration-box p {
+  margin: 0 0 0.7rem;
+  white-space: pre-line;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.narration-box .ornate-button {
+  display: block;
+  margin-left: auto;
+  background: var(--ink);
+}
+
+.choice-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.choice-list button {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(201, 162, 39, 0.75);
+  background: rgba(255, 255, 255, 0.28);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 19px;
+  text-align: left;
+  transition: background-color 300ms ease, border-color 300ms ease;
+}
+
+.choice-list button:hover,
+.choice-list button:focus-visible {
+  border-color: var(--gold);
+  background: rgba(227, 200, 120, 0.2);
+}
+
+@media (max-width: 640px) {
+  .title-art {
+    object-position: 58% center;
+  }
+
+  .title-content {
+    padding: 1.25rem;
+  }
+
+  h1 small {
+    letter-spacing: 0.1em;
+  }
+
+  .prologue-sprite {
+    height: 55vh;
+    left: 4%;
+  }
+
+  .aurelian-sprite {
+    right: 4%;
+    height: 55vh;
+  }
+
+  .narration-box {
+    width: 92%;
+    max-height: 38vh;
+    margin-bottom: 2vh;
+    padding: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ornate-button {
+    transition: none;
+  }
+}

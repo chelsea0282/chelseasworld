@@ -3,7 +3,7 @@ window.CHELSEA_LIBRARY = {
     designSystems: {
         'xp-glitch': 'style.css'
     },
-    navigation: ['creative-comp-projects', 'google-projects', 'data-explorations', 'escape'],
+    navigation: ['creative-comp-projects', 'google-projects', 'data-explorations', 'escape', 'what-are-we'],
     featured: ['project-window', 'data-garden', 'day-in-my-life'],
     content: window.CHELSEA_CONTENT || {}
 };
