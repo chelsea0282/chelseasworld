@@ -3,66 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Chelsea is a thinker, tinkerer, mischief-maker, and builder chasing curiosities in New York and everywhere she's lived.">
     <title>Chelsea's World</title>
     <link id="design-system" rel="stylesheet" href="style.css">
-    </head>
+</head>
 <body>
-    
     <main id="portfolio-container">
-        
-        <header id="site-header">
-            <h1>it's chelsea's world!</h1>
-            <p>Come take a glimpse :) </p>
+        <header class="site-header">
+            <a href="#home" class="wordmark">chelsea's world</a>
+            <a href="mailto:hello@chelseas.world" class="contact-link">say hello <span aria-hidden="true">↗</span></a>
         </header>
 
-        <div id="desktop-icons" aria-label="Project folders"></div>
-        <div id="project-windows" aria-label="Featured projects"></div>
-        
-        <div id="cd-rom-player" class="static-item">
-            <div class="player-titlebar">
-                <span>💿 Windows Media Player</span>
-                <span class="player-controls" aria-hidden="true">_ □ ×</span>
-            </div>
-            <p>Now Playing: One More Time</p>
-            <audio id="background-music" loop>
-                <source src="/Assets/Music/onemoretime.mp3" type="audio/mp3">
-                Your browser does not support the audio element.
-            </audio>
-            <button id="music-toggle">Play Music</button>
-        </div>
+        <section class="statement" id="home" aria-label="About Chelsea">
+            <h1 class="statement-title" aria-label="Chelsea"><span class="title-copyright" aria-hidden="true">©</span>helsea</h1>
+            <p class="statement-copy">Just a troublemaker<sup><a class="footnote-reference" id="footnote-ref-one" href="#footnote-one" aria-label="Footnote 1">1</a></sup> who likes to think and tinker. Always cooking up something, often up to no good. I grew up in Seoul &amp; Irvine and went to school in Ithaca. Life has also taken me to Taipei, London, and SF but NYC is my forever (probably).</p>
+            <p class="statement-copy">Perpetually deep in rabbit holes and letting it take me to the other side. Mostly here to have fun. Ask me about <a class="annotated-phrase" href="https://www.figma.com/design/sFJ6Ww22y7uuskTlXYyYFx/the-overlords?node-id=257-564&amp;t=dFg3KX5V6jbrPc2o-1" target="_blank" rel="noopener noreferrer">The Overlords</a><sup><a class="footnote-reference" id="footnote-ref-two" href="#footnote-two" aria-label="Footnote 2">2</a></sup>, <a class="annotated-phrase" href="https://kingoftheoffice.netlify.app" target="_blank" rel="noopener noreferrer">lucid dreaming</a>, or my other obsessions. Right now: gymming, building kinetic sculptures, and burning tokens at Google.</p>
+            <ol class="footnotes">
+                <li id="footnote-one">Recent rabbit holes: <button class="project-reference" type="button" data-project-id="data-garden">Data Garden</button>, <button class="project-reference" type="button" data-project-id="day-in-my-life">Day in My Life</button>, and <button class="project-reference" type="button" data-project-id="project-window">creative coding</button>.</li>
+                <li id="footnote-two">password = [my].world</li>
+            </ol>
+        </section>
 
-        <footer id="xp-taskbar" aria-label="Windows XP taskbar">
-            <button id="start-button" type="button">
-                <span class="start-logo" aria-hidden="true"></span>
-                <span>start</span>
-            </button>
-            <div class="taskbar-divider" aria-hidden="true"></div>
-            <div class="quick-launch" aria-label="Quick launch">
-                <span class="quick-launch-icon">▣</span>
-                <span class="quick-launch-icon">✉</span>
-                <span class="quick-launch-icon">◎</span>
-            </div>
-            <div class="taskbar-space"></div>
-            <div class="system-tray">
-                <span class="tray-icon">▴</span>
-                <span class="tray-icon">🔊</span>
-                <span id="taskbar-clock">12:00 PM</span>
-            </div>
+        <footer class="site-footer">
+            <span>© Chelsea</span>
+            <a href="mailto:hello@chelseas.world">Get in touch</a>
         </footer>
-
     </main>
-    
-    <div id="project-modal" class="hidden">
-        <div class="modal-content">
+
+    <div id="project-modal" class="hidden" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
             <div class="modal-titlebar">
                 <div class="modal-title-wrap">
-                    <span class="window-icon" aria-hidden="true">▣</span>
                     <h2 id="modal-title">Project Title Placeholder</h2>
                 </div>
                 <div class="window-controls">
-                    <button type="button" aria-label="Minimize">_</button>
-                    <button type="button" aria-label="Maximize">□</button>
-                    <button id="close-modal-btn" type="button" aria-label="Close">×</button>
+                    <button id="close-modal-btn" type="button" aria-label="Close project">×</button>
                 </div>
             </div>
             <div id="modal-body"></div>

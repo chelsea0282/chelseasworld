@@ -1,461 +1,226 @@
-/*
- * style.css
- * Chelsea's World Portfolio - Windows XP Luna Theme
- */
-
-/* --- Global Variables and Reset --- */
 :root {
-    --xp-blue: #245edb;
-    --xp-blue-dark: #123d9b;
-    --xp-blue-light: #6fa4f7;
-    --xp-green: #3ca33c;
-    --xp-light: #ece9d8;
-    --xp-panel: #f5f4ea;
-    --xp-gray: #d4d0c8;
-    --xp-dark: #1f2b4d;
-    --xp-black: #000000;
-    --xp-yellow: #ffcc00;
-    --xp-border-radius: 6px;
-    --xp-font: Tahoma, Verdana, sans-serif;
-    --glitch-shift: 0px;
-    --glitch-accent: #3c8df5;
+    color-scheme: light;
+    --ink: #20201e;
+    --muted: #77756f;
+    --accent: #c34c34;
+    --line: #e7e5e1;
+    --serif: 'Iowan Old Style', 'Baskerville', 'Palatino Linotype', Georgia, serif;
+    --sans: 'Avenir Next', Avenir, 'Segoe UI', sans-serif;
 }
 
-* {
-    box-sizing: border-box;
-    cursor: url('Assets/Images/fun-cursor.cur'), auto;
-}
+* { box-sizing: border-box; }
+
+html { min-width: 320px; min-height: 100%; }
 
 body {
-    background-image: url('Assets/Images/cloud1.png');
-    background-size: cover;
-    background-position: center;
-    background-color: #3b8eea;
-    color: #ffffff;
-    font-family: var(--xp-font);
+    min-width: 320px;
+    min-height: 100vh;
     margin: 0;
-    overflow: hidden;
+    background: #fff;
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
 }
+
+body.modal-open { overflow: hidden; }
+
+a { color: inherit; }
 
 #portfolio-container {
-    width: 100vw;
-    height: 100vh;
-    position: relative; 
-}
-
-/* --- Header Style --- */
-#site-header {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 100;
-}
-
-#site-header h1 {
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    margin-bottom: 5px;
-    color: #ffffff;
-    text-shadow: 2px 2px 0 #174ea6, 3px 3px 0 rgba(0, 44, 130, .45);
-    font-family: var(--xp-font);
-}
-
-#site-header p {
-    margin-top: 0;
-    color: #f5fbff;
-    text-shadow: 1px 1px 0 #174ea6;
-}
-
-/* --- STATIC DESKTOP ICONS (Top Right) --- */
-#desktop-icons {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 50; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 10px;
-}
-
-/* --- Floating Elements Base Style (The Glitchy Window) --- */
-.float-item {
-    position: absolute; 
-    padding: 10px;
-    border: 2px solid #174ea6;
-    background: var(--xp-panel);
-    color: #111111;
-    box-shadow: inset 1px 1px 0 #ffffff, 3px 3px 0 rgba(17, 55, 130, .55), 8px 10px 18px rgba(0, 50, 120, .25);
-    border-radius: var(--xp-border-radius);
-    transition: transform 0.1s ease-out;
-    z-index: 5;
-    user-select: none;
-    cursor: grab;
-    font-family: var(--xp-font);
-}
-
-.float-item::before,
-.float-item::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    pointer-events: none;
-    border-radius: 3px;
-    opacity: 0;
-}
-
-.float-item::before {
-    background: var(--glitch-accent);
-    clip-path: inset(18% 0 68% 0);
-    mix-blend-mode: multiply;
-    animation: xp-glitch-slice 2.8s steps(1, end) infinite;
-}
-
-.float-item::after {
-    border-top: 2px solid #ffffff;
-    border-bottom: 2px solid var(--glitch-accent);
-    clip-path: inset(62% 0 25% 0);
-    transform: translateX(var(--glitch-shift));
-    animation: xp-glitch-slice-alt 3.4s steps(1, end) infinite;
-}
-
-@keyframes xp-glitch-slice {
-    0%, 78%, 100% { opacity: 0; transform: translateX(0); }
-    80% { opacity: .28; transform: translateX(var(--glitch-shift)); }
-    82% { opacity: 0; }
-    94% { opacity: .18; transform: translateX(calc(var(--glitch-shift) * -1)); }
-    96% { opacity: 0; }
-}
-
-@keyframes xp-glitch-slice-alt {
-    0%, 64%, 100% { opacity: 0; }
-    66% { opacity: .7; }
-    68% { opacity: 0; }
-    91% { opacity: .4; }
-    93% { opacity: 0; }
-}
-
-/* --- Window-Specific Style --- */
-.project-window {
-    width: 250px;
-    height: 75px;
-    resize: both; 
-    overflow: hidden; 
-}
-
-/* THE XP TITLE BAR - LUNA BLUE GRADIENT */
-.window-header {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    background: linear-gradient(to bottom, var(--xp-blue-light) 0%, var(--xp-blue) 45%, var(--xp-blue-dark) 100%);
-    color: white;
-    padding: 5px 8px;
-    margin: -10px -10px 10px -10px;
-    font-weight: bold;
-    border-bottom: 1px solid var(--xp-blue-dark);
-    border-top-left-radius: var(--xp-border-radius);
-    border-top-right-radius: var(--xp-border-radius);
-    cursor: move;
-    white-space: nowrap;
-    overflow: hidden;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, .4);
+    width: min(100% - 64px, 1060px);
+    min-height: 100vh;
+    flex-direction: column;
+    margin: 0 auto;
 }
 
-.window-title {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.site-header,
+.site-footer {
+    display: none;
 }
 
-.window-title .window-icon {
-    flex: 0 0 auto;
+.wordmark {
+    font: 600 13px var(--sans);
+    text-decoration: none;
 }
 
-.window-header .window-controls {
-    flex: 0 0 auto;
+.contact-link,
+.site-footer a {
+    color: var(--muted);
+    text-decoration: none;
 }
 
-.window-content {
-    color: #222222;
-    padding: 0 5px;
+.contact-link:hover,
+.site-footer a:hover { color: var(--accent); }
+
+.statement {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    flex: 1;
+    align-content: center;
+    column-gap: clamp(32px, 7vw, 96px);
+    row-gap: 24px;
+    padding: 90px 0 110px;
+    text-align: left;
+    animation: arrive .7s both;
 }
 
-.window-content img {
-    width: 100%;
-    height: auto;
-    display: block;
-    image-rendering: pixelated; 
+.statement-title {
+    grid-column: 1 / -1;
+    margin: 0;
+    font: 400 48px/1.1 var(--serif);
+    letter-spacing: 0;
 }
 
-/* --- Folder Style (Static Icons) --- */
-.project-folder {
-    width: 100px;
-    height: 110px;
-    text-align: center;
-    padding: 5px;
-    background-color: transparent; 
-    border: none;
-    box-shadow: none;
-    transition: none;
+.title-copyright {
+    display: inline-block;
+    font-size: 1.4em;
+    line-height: .8;
+    vertical-align: -.08em;
+}
+
+.statement-copy {
+    max-width: 780px;
+    margin: 0;
+    font: 400 34px/1.5 var(--serif);
+    letter-spacing: 0;
+    text-wrap: pretty;
+}
+
+.annotated-phrase {
+    text-decoration: underline;
+    text-decoration-color: #c8c4bc;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+}
+
+.footnote-reference {
+    color: var(--accent);
+    font: 500 11px var(--sans);
+    text-decoration: none;
+}
+
+.footnote-reference:hover { text-decoration: underline; }
+
+.footnote-reference:focus-visible,
+.project-reference:focus-visible,
+.window-controls button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.footnotes {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin: 8px 0 0;
+    padding: 18px 0 0;
+    border-top: 1px solid var(--line);
+    list-style: none;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.footnotes li { scroll-margin-top: 24px; }
+
+.project-reference {
+    display: inline;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid #d8a99e;
+    background: transparent;
+    color: var(--accent);
+    font: inherit;
     cursor: pointer;
 }
 
-.project-folder img {
-    width: 60px;
-    height: 60px;
-    filter: drop-shadow(2px 2px 0 rgba(16, 55, 120, .7));
-    image-rendering: pixelated;
+.statement-footnote {
+    margin: 38px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.8;
 }
 
-.project-folder p {
-    margin: 0;
-    font-size: 0.9em;
-    font-weight: bold;
-    text-shadow: 1px 1px 0 #174ea6;
-    color: #ffffff;
-}
+.statement-footnote > span:first-child { padding: 0 5px; }
+.statement-footnote .annotation-note { top: calc(100% + 9px); }
+.statement-footnote code { font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; }
 
-.project-folder:hover p,
-.project-folder:focus p {
-    text-decoration: underline;
-}
-
-/* --- Modal/Pop-up Style (XP Dialog Box) --- */
 #project-modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 34, 93, .2);
-    z-index: 999; 
+    z-index: 10;
+    inset: 0;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgb(25 25 24 / 42%);
+    animation: fade-in .18s ease both;
 }
 
 .modal-content {
-    background-color: var(--xp-panel);
-    color: #111111;
-    font-family: var(--xp-font);
-
-    border: 2px solid var(--xp-blue-dark);
-    box-shadow: inset 1px 1px 0 #ffffff, 8px 10px 0 rgba(0, 45, 120, .32), 0 16px 28px rgba(0, 0, 0, .35);
-    border-radius: var(--xp-border-radius);
-    width: 90%;
-    max-width: 700px;
-    min-height: 400px;
+    width: min(720px, 100%);
+    max-height: min(82vh, 760px);
     overflow: hidden;
+    border: 1px solid var(--line);
+    background: #fff;
+    box-shadow: 0 18px 60px rgb(0 0 0 / 16%);
 }
 
 .modal-titlebar {
     display: flex;
+    min-height: 54px;
     align-items: center;
     justify-content: space-between;
-    min-height: 30px;
-    padding: 3px 4px 3px 8px;
-    background: linear-gradient(to bottom, var(--xp-blue-light) 0%, var(--xp-blue) 45%, var(--xp-blue-dark) 100%);
-    color: #ffffff;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, .45);
+    padding: 0 14px 0 20px;
+    border-bottom: 1px solid var(--line);
 }
 
-.modal-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    min-width: 0;
-}
-
-.modal-title-wrap h2 {
-    margin: 0;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.window-icon {
-    color: var(--xp-yellow);
-    font-size: 0.85rem;
-}
-
-.window-controls {
-    display: flex;
-    gap: 2px;
-}
+.modal-title-wrap h2 { margin: 0; font: 400 20px var(--serif); }
 
 .window-controls button {
-    width: 22px;
-    height: 20px;
-    padding: 0;
-    border: 1px solid #ffffff;
-    border-right-color: var(--xp-blue-dark);
-    border-bottom-color: var(--xp-blue-dark);
-    border-radius: 3px;
-    background: linear-gradient(#76aaf3, #245edb);
-    color: #ffffff;
-    font: bold 0.8rem Arial, sans-serif;
-    line-height: 16px;
-}
-
-.window-header .window-controls button {
-    width: 16px;
-    height: 15px;
-    font-size: 0.65rem;
-    line-height: 11px;
-}
-
-.window-controls button:active {
-    border: 1px solid var(--xp-blue-dark);
-    border-right-color: #ffffff;
-    border-bottom-color: #ffffff;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: 300 25px/1 var(--sans);
+    cursor: pointer;
 }
 
 #modal-body {
-    max-height: 70vh;
+    max-height: calc(min(82vh, 760px) - 55px);
     overflow: auto;
-    padding: 20px;
+    padding: 24px;
+    font-size: 13px;
+    line-height: 1.7;
 }
 
-#modal-body a {
-    color: #003399;
-    font-weight: bold;
+#modal-body a { color: var(--accent); }
+#modal-body li { margin: 7px 0; }
+#modal-body img { max-width: 100%; height: auto; }
+#modal-body iframe { display: block; max-width: 100%; border: 0; }
+.hidden { display: none !important; }
+
+@keyframes arrive {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-#close-modal-btn {
-    cursor: pointer;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* --- CD ROM Player Style --- */
-#cd-rom-player {
-    bottom: 46px;
-    right: 20px;
-    width: 200px;
-    text-align: center;
-    z-index: 10;
-    position: fixed; 
-    padding: 0 0 8px;
-    border: 1px solid var(--xp-blue-dark);
-    background-color: rgba(245, 244, 234, .94);
-    color: #222222;
-    box-shadow: 2px 3px 0 rgba(0, 45, 120, .38);
-    border-radius: var(--xp-border-radius); 
-}
-
-.player-titlebar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    padding: 4px 7px;
-    background: linear-gradient(to bottom, var(--xp-blue-light), var(--xp-blue) 50%, var(--xp-blue-dark));
-    color: #ffffff;
-    font-size: 0.7rem;
-    font-weight: bold;
-    text-align: left;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, .45);
-}
-
-.player-controls {
-    font-family: Arial, sans-serif;
-    letter-spacing: 2px;
-}
-
-#cd-rom-player p {
-    margin: 0 8px;
-}
-
-#music-toggle {
-    background: linear-gradient(#ffffff, #d4d0c8);
-    color: #111111;
-    border: 1px solid #53627a;
-    padding: 5px;
-    font-weight: bold;
-    margin-top: 8px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-/* --- XP taskbar ------------------------------------------------------- */
-#xp-taskbar {
-    position: fixed;
-    inset: auto 0 0;
-    z-index: 800;
-    display: flex;
-    align-items: center;
-    height: 34px;
-    padding: 2px 5px 2px 0;
-    background: linear-gradient(to bottom, #3c9a3c 0, #2d8c2d 3px, #245edb 4px, #245edb 100%);
-    border-top: 1px solid #76b7f7;
-    box-shadow: 0 -1px 0 rgba(0, 0, 0, .35);
-    font-size: 0.8rem;
-}
-
-#start-button {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    height: 30px;
-    min-width: 94px;
-    padding: 0 14px 0 9px;
-    border: 1px solid #1d5c1d;
-    border-radius: 0 14px 14px 0;
-    background: linear-gradient(to bottom, #6ecb55, #258525);
-    color: #ffffff;
-    font: italic bold 1rem Arial, sans-serif;
-    text-shadow: 1px 1px 0 #1d5c1d;
-}
-
-.start-logo {
-    width: 17px;
-    height: 17px;
-    border: 2px solid #ffffff;
-    transform: skewY(-12deg);
-    box-shadow: inset 5px 0 #f04a3a, inset -5px 0 #f6ce3d;
-}
-
-.taskbar-divider {
-    width: 1px;
-    height: 24px;
-    margin: 0 7px;
-    background: rgba(255, 255, 255, .38);
-    border-right: 1px solid rgba(0, 44, 130, .45);
-}
-
-.quick-launch,
-.system-tray {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #ffffff;
-}
-
-.quick-launch-icon {
-    font-size: 1rem;
-    text-shadow: 1px 1px 0 #16489d;
-}
-
-.taskbar-space { flex: 1; }
-
-.system-tray {
-    height: 28px;
-    padding: 0 10px;
-    border-left: 1px solid #174ea6;
-    background: rgba(25, 89, 191, .55);
-    font-size: 0.72rem;
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @media (max-width: 600px) {
-    #xp-taskbar { height: 30px; }
-    #start-button { min-width: 76px; padding-right: 9px; }
-    .quick-launch { display: none; }
-    #cd-rom-player { right: 8px; bottom: 42px; }
+    #portfolio-container { width: calc(100% - 40px); }
+    .statement { grid-template-columns: 1fr; gap: 30px; padding: 70px 0 90px; }
+    .statement-copy { max-width: 500px; font-size: 27px; line-height: 1.58; }
+    .footnotes { grid-template-columns: 1fr; gap: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }

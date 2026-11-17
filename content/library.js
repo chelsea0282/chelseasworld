@@ -1,7 +1,7 @@
 window.CHELSEA_LIBRARY = {
-    designSystem: 'xp-glitch',
+    designSystem: 'editorial',
     designSystems: {
-        'xp-glitch': 'style.css'
+        editorial: 'style.css'
     },
     navigation: ['creative-comp-projects', 'google-projects', 'data-explorations', 'escape', 'what-are-we'],
     featured: ['project-window', 'data-garden', 'day-in-my-life'],
